@@ -21,7 +21,7 @@
             min-height: 100vh;
             transition: background 0.6s ease;
             position: relative;
-            overflow: hidden;
+            /* Düzeltme: Sayfanın kaydırılmasına izin vermek için "overflow: hidden;" kuralı kaldırıldı. */
         }
 
         /* Animated background particles */
@@ -35,6 +35,7 @@
             background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
                         radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
             animation: float 20s ease-in-out infinite;
+            z-index: -1; /* Arka planın içerik arkasında kalmasını sağlar */
         }
 
         @keyframes float {
@@ -56,6 +57,7 @@
             z-index: 1;
             border: 1px solid rgba(255,255,255,0.2);
             transition: all 0.3s ease;
+            margin: 20px 0; /* İçerik uzadığında yukarıdan ve aşağıdan boşluk bırakır */
         }
 
         h1 {
@@ -606,6 +608,7 @@
                 border-radius: 0;
                 padding: 20px 15px;
                 box-shadow: none;
+                margin: 0;
             }
 
             h1 {
@@ -802,11 +805,6 @@
     <div class="overlay" id="overlay" onclick="closeOverlay()"></div>
 
     <script>
-        // --- Mevcut JavaScript kodunuz burada yer alacak ---
-        // Kodun çalışması için herhangi bir değişiklik gerekmediğinden,
-        // orijinal JavaScript kodunu buraya kopyalayıp yapıştırabilirsiniz.
-        // Aşağıya örnek ve değiştirilmiş bir showStatistics fonksiyonu eklenmiştir.
-        
         let currentTheme = 'default';
         let gameBoard = [];
         let solution = [];
@@ -874,7 +872,7 @@
             }
 
             let revealedCount = 0;
-            while (revealedCount < 14) {
+            while (revealedCount < 8) { // Değişiklik: İpucu sayısı 14'ten 8'e düşürüldü.
                 const row = Math.floor(Math.random() * 6);
                 const col = Math.floor(Math.random() * 6);
                 if (!fixedCells[row][col]) {
@@ -922,7 +920,8 @@
             if (r > 1 && board[r-1][c] === sym && board[r-2][c] === sym) return false;
             if (c < 4 && board[r][c+1] === sym && board[r][c+2] === sym) return false;
             if (r < 4 && board[r+1][c] === sym && board[r+2][c] === sym) return false;
-
+            if (c > 0 && c < 5 && board[r][c-1] === sym && board[r][c+1] === sym) return false;
+            if (r > 0 && r < 5 && board[r-1][c] === sym && board[r+1][c] === sym) return false;
             return true;
         }
 
@@ -978,7 +977,6 @@
         function checkAllRules() {
             let lastErrorCount = errorCells.size;
             errorCells.clear();
-            let isError = false;
 
             for (let i = 0; i < 6; i++) {
                 let rowCounts = [0, 0], colCounts = [0, 0];
@@ -993,8 +991,8 @@
                         [j, j+1, j+2].forEach(k => errorCells.add(`${k},${i}`));
                     }
                 }
-                if (rowCounts[0] > 3 || rowCounts[1] > 3) { for(let k=0; k<6; k++) errorCells.add(`${i},${k}`); }
-                if (colCounts[0] > 3 || colCounts[1] > 3) { for(let k=0; k<6; k++) errorCells.add(`${k},${i}`); }
+                if (rowCounts[0] > 3 || rowCounts[1] > 3) { for(let k=0; k<6; k++) if(gameBoard[i][k] !== null) errorCells.add(`${i},${k}`); }
+                if (colCounts[0] > 3 || colCounts[1] > 3) { for(let k=0; k<6; k++) if(gameBoard[k][i] !== null) errorCells.add(`${k},${i}`); }
             }
 
             constraints.forEach(c => {
@@ -1008,7 +1006,7 @@
                 }
             });
             
-            if (errorCells.size > 0 && errorCells.size > lastErrorCount) {
+            if (errorCells.size > 0 && lastErrorCount === 0) {
                 errorCount++;
                 document.getElementById('errorCount').textContent = errorCount;
             }
@@ -1037,7 +1035,6 @@
             document.getElementById('statErrors').textContent = errorCount;
             document.getElementById('statHints').textContent = hintCount;
             
-            // --- Update new percentile card ---
             const percentile = Math.max(10, 99 - errorCount * 5 - hintCount * 3 - Math.floor(elapsed / 30));
             document.getElementById('percentileCircle').style.strokeDasharray = `${percentile}, 100`;
             document.getElementById('percentileText').textContent = `%${percentile}`;
@@ -1086,7 +1083,7 @@
             let emptyCells = [];
             for (let i = 0; i < 6; i++) {
                 for (let j = 0; j < 6; j++) {
-                    if (gameBoard[i][j] === null) {
+                    if (gameBoard[i][j] === null && !fixedCells[i][j]) {
                         emptyCells.push({i, j});
                     }
                 }
@@ -1100,6 +1097,7 @@
             hintCount++;
             const { i, j } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
             gameBoard[i][j] = solution[i][j];
+            fixedCells[i][j] = true; // Mark hint as fixed
             
             const cellEl = document.querySelector(`[data-row='${i}'][data-col='${j}']`);
             cellEl.classList.add('success');
