@@ -2,13 +2,23 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Duo - Zeka Oyunu</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        html {
+            touch-action: manipulation;
         }
 
         body {
@@ -19,7 +29,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            transition: background 0.6s ease;
+            overflow: hidden;
             position: relative;
         }
 
@@ -41,42 +51,71 @@
             50% { transform: translate(10%, 10%) rotate(180deg); }
         }
 
-        .container {
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            padding: 35px;
-            border-radius: 30px;
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2),
-                        0 0 100px rgba(255,255,255,0.1) inset;
-            text-align: center;
-            max-width: 600px;
-            width: 100%;
             position: relative;
-            z-index: 1;
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s ease;
-            margin: 20px 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 15px 20px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         h1 {
-            margin-bottom: 25px;
-            font-size: 3.5em;
+            font-size: 2em;
             font-weight: 900;
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 10px rgba(102,126,234,0.1);
-            letter-spacing: -2px;
+            letter-spacing: -1px;
         }
 
-        .game-header {
+        .timer {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #495057;
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            padding: 8px 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .game-content {
+            flex: 1;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            margin-bottom: 25px;
+            justify-content: center;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
         }
 
-        .settings-btn, .new-game-btn, .hint-btn {
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
             padding: 12px 24px;
             border: none;
             border-radius: 15px;
@@ -86,6 +125,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            touch-action: manipulation;
         }
 
         .settings-btn {
@@ -96,9 +136,8 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .settings-btn:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        .settings-btn:active {
+            transform: scale(0.95);
         }
 
         .new-game-btn {
@@ -107,9 +146,8 @@
             box-shadow: 0 4px 15px rgba(102,126,234,0.3);
         }
 
-        .new-game-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(102,126,234,0.4);
+        .new-game-btn:active {
+            transform: scale(0.95);
         }
 
         .hint-btn {
@@ -118,27 +156,28 @@
             box-shadow: 0 4px 15px rgba(250,112,154,0.3);
         }
 
-        .hint-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(250,112,154,0.4);
+        .hint-btn:active {
+            transform: scale(0.95);
         }
 
         .game-board {
             display: inline-block;
             position: relative;
-            margin: 25px auto;
+            margin: 20px auto;
+            touch-action: manipulation;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(6, 65px);
-            grid-template-rows: repeat(6, 65px);
-            gap: 3px;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            gap: 2px;
             background: linear-gradient(135deg, #e0e5ec, #f0f4f8);
-            padding: 4px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1),
-                        0 0 60px rgba(102,126,234,0.05) inset;
+            padding: 3px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: min(90vw, 400px);
+            aspect-ratio: 1 / 1;
         }
 
         .cell {
@@ -148,19 +187,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.2em;
+            font-size: clamp(1.5em, 5vw, 2.2em);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: visible;
-            border-radius: 12px;
+            border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            touch-action: manipulation;
         }
 
-        .cell:hover:not(.fixed) {
-            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
-            transform: translateY(-3px) scale(1.08);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            border-color: #667eea;
+        .cell:active:not(.fixed) {
+            transform: scale(0.95);
         }
 
         .cell.fixed {
@@ -198,74 +235,55 @@
 
         .constraint {
             position: absolute;
-            font-size: 22px;
+            font-size: clamp(14px, 3vw, 20px);
             font-weight: 900;
             color: #495057;
             background: transparent;
             z-index: 10;
-            box-shadow: none;
             padding: 0;
             border: none;
             text-shadow: 0 1px 2px rgba(255,255,255,0.7);
+            pointer-events: none;
         }
 
         .constraint-h {
             top: 50%;
-            right: -12px;
+            right: -10px;
             transform: translateY(-50%);
         }
 
         .constraint-v {
-            bottom: -12px;
+            bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
         }
 
-        .stats {
-            margin-top: 25px;
-            display: flex;
-            justify-content: space-around;
-            font-size: 1.1em;
-            gap: 20px;
-        }
-
-        .stats > div {
-            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
-            padding: 12px 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            flex: 1;
-            transition: all 0.3s ease;
-        }
-
-        .stats > div:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-        }
-
         .rules {
-            margin-top: 25px;
-            padding: 20px;
+            margin-top: 20px;
+            padding: 15px;
             background: linear-gradient(145deg, #f8f9fa, #e9ecef);
-            border-radius: 15px;
+            border-radius: 12px;
             text-align: left;
             box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 400px;
         }
 
         .rules h3 {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             color: #495057;
-            font-size: 1.2em;
+            font-size: 1.1em;
         }
 
         .rules ul {
             list-style: none;
             color: #6c757d;
+            font-size: 0.9em;
         }
 
         .rules li {
-            margin: 8px 0;
-            padding-left: 25px;
+            margin: 6px 0;
+            padding-left: 20px;
             position: relative;
         }
 
@@ -277,7 +295,7 @@
             font-weight: bold;
         }
 
-        /* Modal Base Styles (for Settings and Statistics) */
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -286,23 +304,15 @@
             transform: translate(-50%, -50%);
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
-            padding: 35px;
-            border-radius: 25px;
+            padding: 30px 25px;
+            border-radius: 20px;
             box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
             z-index: 1000;
             width: 90%;
-            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 420px;
             animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            max-height: 90vh;
+            max-height: 85vh;
             overflow-y: auto;
-        }
-        
-        .settings-modal {
-             max-width: 420px;
-        }
-
-        .statistics-modal {
-             max-width: 500px;
         }
 
         @keyframes modalSlideIn {
@@ -321,42 +331,37 @@
         }
 
         .modal-title {
-            font-size: 1.8em;
-            margin-bottom: 25px;
+            font-size: 1.6em;
+            margin-bottom: 20px;
             text-align: center;
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        
-        .stats-title {
-             font-size: 2.2em;
-        }
 
         .theme-options {
             display: grid;
-            gap: 12px;
+            gap: 10px;
         }
 
         .theme-btn {
-            padding: 18px;
+            padding: 15px;
             border: 2px solid #e1e4e8;
-            border-radius: 15px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: space-between;
             background: linear-gradient(145deg, #ffffff, #f8f9fa);
-            font-size: 1.1em;
+            font-size: 1em;
             font-weight: 600;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            touch-action: manipulation;
         }
 
-        .theme-btn:hover {
-            transform: translateX(5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            border-color: #667eea;
+        .theme-btn:active {
+            transform: scale(0.98);
         }
 
         .theme-btn.active {
@@ -366,177 +371,29 @@
         }
 
         .theme-symbols {
-            font-size: 1.6em;
+            font-size: 1.4em;
         }
 
         .close-modal-btn {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             background: none;
             border: none;
-            font-size: 1.8em;
+            font-size: 1.5em;
             cursor: pointer;
             color: #6c757d;
             transition: all 0.3s ease;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .close-modal-btn:hover {
-            background: #f8f9fa;
-            color: #495057;
-            transform: rotate(90deg);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-item {
-            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
-            padding: 25px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-        }
-
-        .stat-value {
-            font-size: 2.2em;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            color: #6c757d;
-            font-size: 0.95em;
-            font-weight: 600;
-        }
-
-        .percentile-card {
-            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            box-shadow: 0 10px 30px rgba(102, 166, 255, 0.3);
-            animation: achievementSlide 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.2s backwards;
-        }
-
-        .percentile-chart {
-            flex-shrink: 0;
-        }
-
-        .circular-chart {
-            display: block;
-            width: 90px;
-            height: 90px;
-        }
-
-        .circle-bg {
-            fill: none;
-            stroke: rgba(255, 255, 255, 0.3);
-            stroke-width: 3.8;
-        }
-
-        .circle {
-            fill: none;
-            stroke: #ffffff;
-            stroke-width: 4;
-            stroke-linecap: round;
-            animation: progress 1s ease-out forwards;
-        }
-
-        @keyframes progress {
-            0% { stroke-dasharray: 0 100; }
-        }
-
-        .percentage {
-            fill: #ffffff;
-            font-family: inherit;
-            font-size: 0.6em;
-            font-weight: 800;
-            text-anchor: middle;
-        }
-
-        .percentile-text h3 {
-            margin: 0 0 5px 0;
-            font-size: 1.4em;
-            color: white;
-            font-weight: 700;
-        }
-
-        .percentile-text p {
-            margin: 0;
-            font-size: 1em;
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 500;
-        }
-        
-        .achievement {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin: 12px 0;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 8px 25px rgba(240,147,251,0.3);
-            animation: achievementSlide 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes achievementSlide {
-            from {
-                opacity: 0;
-                transform: translateX(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .achievement-icon {
-            font-size: 2.5em;
-        }
-
-        .play-again-btn {
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 15px;
-            font-size: 1.2em;
-            font-weight: 700;
-            cursor: pointer;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            margin-top: 25px;
-            box-shadow: 0 8px 30px rgba(102,126,234,0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .play-again-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(102,126,234,0.4);
+        .close-modal-btn:active {
+            transform: scale(0.9);
         }
 
         .overlay {
@@ -560,144 +417,131 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f3f5; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(135deg, #5a67d8, #6b46c1); }
-        
+
+        /* Victory Modal */
+        .victory-modal {
+            max-width: 500px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .play-again-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            margin-top: 20px;
+            box-shadow: 0 8px 30px rgba(102,126,234,0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .play-again-btn:active {
+            transform: scale(0.98);
+        }
+
         @media (max-width: 768px) {
-            body {
-                align-items: flex-start;
-                padding: 0;
+            .game-container {
+                height: 100vh;
+                height: -webkit-fill-available;
             }
 
-            .container {
-                width: 100%;
-                min-height: 100vh;
-                height: auto;
-                border-radius: 0;
-                padding: 20px 15px;
-                box-shadow: none;
-                margin: 0;
+            .header {
+                padding: 12px 15px;
             }
 
             h1 {
-                font-size: 2.8em;
-                margin-bottom: 20px;
+                font-size: 1.6em;
             }
 
-            .game-header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 15px;
+            .timer {
+                font-size: 1.1em;
+                padding: 6px 12px;
             }
 
-            .game-header > div {
-                display: flex;
-                justify-content: space-between;
-                gap: 10px;
-            }
-
-            .settings-btn, .new-game-btn, .hint-btn {
-                flex-grow: 1;
-                padding: 14px;
-            }
-            
-            .game-board {
-                margin: 20px auto;
-                width: 100%;
-                max-width: 400px;
-            }
-            
-            .grid {
-                grid-template-columns: repeat(6, 1fr);
-                grid-template-rows: repeat(6, 1fr);
-                gap: 2px;
-                padding: 3px;
-                aspect-ratio: 1 / 1;
-            }
-
-            .cell {
-                font-size: 1.8em;
-                border-radius: 8px;
-            }
-
-            .constraint {
-                font-size: 16px;
-            }
-            .constraint-h { right: -8px; }
-            .constraint-v { bottom: -8px; }
-
-            .stats {
-                flex-direction: column;
-                gap: 10px;
-                font-size: 1em;
-            }
-            
-            .rules {
-                margin-top: 20px;
+            .game-content {
                 padding: 15px;
+            }
+
+            .controls {
+                margin-bottom: 15px;
+            }
+
+            .btn {
+                padding: 10px 18px;
                 font-size: 0.9em;
             }
-            
-            .modal {
-                width: 100%;
-                max-width: 100%;
-                height: 100%;
-                max-height: 100vh;
-                border-radius: 0;
-                padding: 20px 15px;
+
+            .grid {
+                width: min(85vw, 350px);
             }
-            
-            .stats-title { font-size: 1.8em; }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
+
+            .rules {
+                font-size: 0.85em;
+                padding: 12px;
             }
-            
-            .percentile-card {
-                flex-direction: column;
-                text-align: center;
-                padding: 20px;
-            }
-            
-            .percentile-text h3 { font-size: 1.2em; }
-            .percentile-text p { font-size: 0.9em; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>DUO</h1>
-        
-        <div class="game-header">
-            <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
-            <div>
-                <button class="hint-btn" onclick="getHint()">💡 İpucu</button>
-                <button class="new-game-btn" onclick="newGame()">Yeni Oyun</button>
+    <div class="game-container">
+        <div class="header">
+            <h1>DUO</h1>
+            <div class="timer" id="timer">00:00</div>
+        </div>
+
+        <div class="game-content">
+            <div class="controls">
+                <button class="btn settings-btn" onclick="toggleSettings()">⚙️</button>
+                <button class="btn hint-btn" onclick="getHint()">💡 İpucu</button>
+                <button class="btn new-game-btn" onclick="newGame()">Yeni Oyun</button>
             </div>
-        </div>
 
-        <div class="game-board">
-            <div class="grid" id="gameGrid"></div>
-        </div>
+            <div class="game-board">
+                <div class="grid" id="gameGrid"></div>
+            </div>
 
-        <div class="stats">
-            <div>Hamle: <span id="moveCount">0</span></div>
-            <div>Hata: <span id="errorCount" class="error-count">0</span></div>
-            <div>Süre: <span id="timer">00:00</span></div>
-        </div>
-
-        <div class="rules">
-            <h3>Kurallar:</h3>
-            <ul>
-                <li>Yan yana (yatay/dikey) aynı sembolden en fazla 2 tane olabilir</li>
-                <li>Her satır ve sütunda 3'er tane sembol olmalı</li>
-                <li>`=` işareti olan hücreler aynı sembolü içermeli</li>
-                <li>`×` işareti olan hücreler farklı sembolleri içermeli</li>
-            </ul>
+            <div class="rules">
+                <h3>Kurallar:</h3>
+                <ul>
+                    <li>Yan yana (yatay/dikey) aynı sembolden en fazla 2 tane olabilir</li>
+                    <li>Her satır ve sütunda 3'er tane sembol olmalı</li>
+                    <li>`=` işareti olan hücreler aynı sembolü içermeli</li>
+                    <li>`×` işareti olan hücreler farklı sembolleri içermeli</li>
+                </ul>
+            </div>
         </div>
     </div>
 
@@ -724,28 +568,9 @@
         </div>
     </div>
 
-    <div class="modal statistics-modal" id="statisticsSheet">
-        <button class="close-modal-btn" onclick="closeStatistics()">×</button>
-        <h2 class="modal-title stats-title">🎉 Tebrikler! 🎉</h2>
-        
-        <div class="percentile-card">
-            <div class="percentile-chart">
-                <svg viewBox="0 0 36 36" class="circular-chart">
-                    <path class="circle-bg"
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                    <path class="circle" id="percentileCircle"
-                        stroke-dasharray="85, 100"
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                    <text x="18" y="20.35" class="percentage" id="percentileText">%85</text>
-                </svg>
-            </div>
-            <div class="percentile-text">
-                <h3>Sıralamanız</h3>
-                <p id="percentileDescription">Tüm oyuncuların %85'inden daha iyisiniz.</p>
-            </div>
-        </div>
+    <div class="modal victory-modal" id="victoryModal">
+        <button class="close-modal-btn" onclick="closeVictory()">×</button>
+        <h2 class="modal-title">🎉 Tebrikler! 🎉</h2>
         
         <div class="stats-grid">
             <div class="stat-item">
@@ -753,22 +578,12 @@
                 <div class="stat-label">Süre</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value" id="statMoves">0</div>
-                <div class="stat-label">Hamle Sayısı</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="statErrors">0</div>
-                <div class="stat-label">Hata Sayısı</div>
-            </div>
-            <div class="stat-item">
                 <div class="stat-value" id="statHints">0</div>
                 <div class="stat-label">İpucu Kullanımı</div>
             </div>
         </div>
 
-        <div id="achievements"></div>
-
-        <button class="play-again-btn" onclick="newGame(); closeStatistics();">Tekrar Oyna</button>
+        <button class="play-again-btn" onclick="newGame(); closeVictory();">Tekrar Oyna</button>
     </div>
 
     <div class="overlay" id="overlay" onclick="closeOverlay()"></div>
@@ -779,8 +594,6 @@
         let solution = [];
         let fixedCells = [];
         let constraints = [];
-        let moveCount = 0;
-        let errorCount = 0;
         let hintCount = 0;
         let startTime = null;
         let timerInterval = null;
@@ -792,6 +605,17 @@
             fenerbahce: { name: 'Fenerbahçe', symbols: ['🐤', '⚓'] },
             besiktas: { name: 'Beşiktaş', symbols: ['🦅', '⚫'] }
         };
+
+        // Prevent zoom on iOS
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        });
+
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
 
         window.onload = function() {
             newGame();
@@ -816,34 +640,32 @@
             if (document.getElementById('settingsModal').classList.contains('show')) {
                 toggleSettings();
             }
-            if (document.getElementById('statisticsSheet').classList.contains('show')) {
-                closeStatistics();
+            if (document.getElementById('victoryModal').classList.contains('show')) {
+                closeVictory();
             }
         }
 
         function generatePuzzle() {
-            gameBoard = Array(6).fill(null).map(() => Array(6).fill(false).map(() => null));
+            gameBoard = Array(6).fill(null).map(() => Array(6).fill(null));
             fixedCells = Array(6).fill(null).map(() => Array(6).fill(false));
             constraints = [];
             errorCells.clear();
             solution = generateValidSolution();
             
-            // --- YENİ KISITLAMA OLUŞTURMA MANTIĞI ---
+            // Generate constraints
             const allPossibleConstraints = [];
             for (let i = 0; i < 6; i++) {
                 for (let j = 0; j < 6; j++) {
-                    // Yatay kısıtlamalar
                     if (j < 5) {
                         allPossibleConstraints.push({ type: 'horizontal', row: i, col: j });
                     }
-                    // Dikey kısıtlamalar
                     if (i < 5) {
                         allPossibleConstraints.push({ type: 'vertical', row: i, col: j });
                     }
                 }
             }
 
-            // Kısıtlamaları karıştır ve ilk 10'unu al
+            // Shuffle and select 10 constraints
             allPossibleConstraints.sort(() => Math.random() - 0.5);
             const selectedConstraints = allPossibleConstraints.slice(0, 10);
 
@@ -851,14 +673,13 @@
                 let val;
                 if (c.type === 'horizontal') {
                     val = solution[c.row][c.col] === solution[c.row][c.col + 1] ? '=' : '×';
-                } else { // vertical
+                } else {
                     val = solution[c.row][c.col] === solution[c.row + 1][c.col] ? '=' : '×';
                 }
                 return { ...c, constraint: val };
             });
-            // --- KISITLAMA MANTIĞI SONU ---
 
-
+            // Reveal some cells
             let revealedCount = 0;
             while (revealedCount < 8) {
                 const row = Math.floor(Math.random() * 6);
@@ -873,6 +694,7 @@
 
         function generateValidSolution() {
             const board = Array(6).fill(null).map(() => Array(6).fill(null));
+            
             function solve() {
                 for (let i = 0; i < 6; i++) {
                     for (let j = 0; j < 6; j++) {
@@ -891,6 +713,7 @@
                 }
                 return true;
             }
+            
             solve();
             return board;
         }
@@ -898,31 +721,36 @@
         function isPlacementValid(board, r, c) {
             const sym = board[r][c];
             
-            // Kural 2: Her satır ve sütunda 3'er tane sembol olmalı (aşmamalı)
+            // Check row and column counts
             let rowCount = 0, colCount = 0;
-            for(let i = 0; i < 6; i++) {
-                if(board[r][i] === sym) rowCount++;
-                if(board[i][c] === sym) colCount++;
+            for (let i = 0; i < 6; i++) {
+                if (board[r][i] === sym) rowCount++;
+                if (board[i][c] === sym) colCount++;
             }
             if (rowCount > 3 || colCount > 3) return false;
 
-            // Kural 1: Yan yana 3 aynı sembol olamaz
+            // Check for three in a row
             if (c > 1 && board[r][c-1] === sym && board[r][c-2] === sym) return false;
             if (r > 1 && board[r-1][c] === sym && board[r-2][c] === sym) return false;
             if (c > 0 && c < 5 && board[r][c-1] === sym && board[r][c+1] === sym) return false;
             if (r > 0 && r < 5 && board[r-1][c] === sym && board[r+1][c] === sym) return false;
             
-            // Eğer satır/sütun dolduysa, sayıların eşit (3'e 3) olduğundan emin ol
+            // Check complete rows/columns have exactly 3 of each
             if (board[r].every(val => val !== null)) {
-                let count0 = board[r].filter(v => v===0).length;
-                if(count0 !== 3) return false;
+                let count0 = board[r].filter(v => v === 0).length;
+                if (count0 !== 3) return false;
             }
+            
             let colFilled = true;
-            for(let i=0; i<6; i++) if(board[i][c] === null) colFilled = false;
-            if(colFilled){
+            for (let i = 0; i < 6; i++) {
+                if (board[i][c] === null) colFilled = false;
+            }
+            if (colFilled) {
                 let count0 = 0;
-                for(let i=0; i<6; i++) if(board[i][c] === 0) count0++;
-                if(count0 !== 3) return false;
+                for (let i = 0; i < 6; i++) {
+                    if (board[i][c] === 0) count0++;
+                }
+                if (count0 !== 3) return false;
             }
 
             return true;
@@ -948,6 +776,10 @@
                     
                     if (!fixedCells[i][j]) {
                         cell.addEventListener('click', () => cellClick(i, j));
+                        cell.addEventListener('touchend', (e) => {
+                            e.preventDefault();
+                            cellClick(i, j);
+                        });
                     }
                     grid.appendChild(cell);
                 }
@@ -955,7 +787,7 @@
             
             constraints.forEach(c => {
                 const cell = grid.children[c.row * 6 + c.col];
-                if(cell){
+                if (cell) {
                     const constraintEl = document.createElement('div');
                     constraintEl.className = `constraint ${c.type === 'horizontal' ? 'constraint-h' : 'constraint-v'}`;
                     constraintEl.textContent = c.constraint;
@@ -968,33 +800,38 @@
             if (fixedCells[row][col]) return;
             
             gameBoard[row][col] = gameBoard[row][col] === null ? 0 : (gameBoard[row][col] === 0 ? 1 : null);
-            moveCount++;
-            document.getElementById('moveCount').textContent = moveCount;
             
             checkAllRules();
             renderBoard();
             
             if (checkVictory()) {
-                showStatistics();
+                showVictory();
             }
         }
 
         function checkAllRules() {
-            let lastErrorCount = errorCells.size;
             errorCells.clear();
 
             for (let i = 0; i < 6; i++) {
-                // Hata 1: Satır/Sütunlarda 3'ten fazla aynı sembol
+                // Check row/column counts
                 let rowCounts = [0, 0], colCounts = [0, 0];
                 for (let j = 0; j < 6; j++) {
-                    if(gameBoard[i][j] !== null) rowCounts[gameBoard[i][j]]++;
-                    if(gameBoard[j][i] !== null) colCounts[gameBoard[j][i]]++;
+                    if (gameBoard[i][j] !== null) rowCounts[gameBoard[i][j]]++;
+                    if (gameBoard[j][i] !== null) colCounts[gameBoard[j][i]]++;
                 }
-                if (rowCounts[0] > 3 || rowCounts[1] > 3) { for(let k=0; k<6; k++) if(gameBoard[i][k] !== null) errorCells.add(`${i},${k}`); }
-                if (colCounts[0] > 3 || colCounts[1] > 3) { for(let k=0; k<6; k++) if(gameBoard[k][i] !== null) errorCells.add(`${k},${i}`); }
+                if (rowCounts[0] > 3 || rowCounts[1] > 3) {
+                    for (let k = 0; k < 6; k++) {
+                        if (gameBoard[i][k] !== null) errorCells.add(`${i},${k}`);
+                    }
+                }
+                if (colCounts[0] > 3 || colCounts[1] > 3) {
+                    for (let k = 0; k < 6; k++) {
+                        if (gameBoard[k][i] !== null) errorCells.add(`${k},${i}`);
+                    }
+                }
                 
-                // Hata 2: Yan yana 3 aynı sembol
-                 for (let j = 0; j < 4; j++) {
+                // Check three in a row
+                for (let j = 0; j < 4; j++) {
                     if (gameBoard[i][j] !== null && gameBoard[i][j] === gameBoard[i][j+1] && gameBoard[i][j] === gameBoard[i][j+2]) {
                         [j, j+1, j+2].forEach(k => errorCells.add(`${i},${k}`));
                     }
@@ -1004,40 +841,44 @@
                 }
             }
 
-            // Hata 3: Kısıtlama ihlalleri
+            // Check constraints
             constraints.forEach(c => {
                 let r1 = c.row, c1 = c.col;
                 let r2 = c.type === 'horizontal' ? r1 : r1 + 1;
                 let c2 = c.type === 'horizontal' ? c1 + 1 : c1;
                 const v1 = gameBoard[r1][c1], v2 = gameBoard[r2][c2];
-                if(v1 !== null && v2 !== null && ((v1 === v2) !== (c.constraint === '='))) {
+                if (v1 !== null && v2 !== null && ((v1 === v2) !== (c.constraint === '='))) {
                     errorCells.add(`${r1},${c1}`);
                     errorCells.add(`${r2},${c2}`);
                 }
             });
-            
-            if (errorCells.size > 0 && lastErrorCount === 0 && moveCount > 0) {
-                errorCount++;
-                document.getElementById('errorCount').textContent = errorCount;
-            }
         }
-        
+
         function checkVictory() {
+            // Check if board is full
             for (let i = 0; i < 6; i++) {
-                let rowCounts = [0,0];
-                let colCounts = [0,0];
                 for (let j = 0; j < 6; j++) {
-                    if (gameBoard[i][j] === null) return false; // Boş hücre var
+                    if (gameBoard[i][j] === null) return false;
+                }
+            }
+            
+            // Check counts
+            for (let i = 0; i < 6; i++) {
+                let rowCounts = [0, 0];
+                let colCounts = [0, 0];
+                for (let j = 0; j < 6; j++) {
                     rowCounts[gameBoard[i][j]]++;
                     colCounts[gameBoard[j][i]]++;
                 }
-                if(rowCounts[0] !== 3 || rowCounts[1] !== 3) return false; // Satırda sayı dengesiz
+                if (rowCounts[0] !== 3 || rowCounts[1] !== 3) return false;
+                if (colCounts[0] !== 3 || colCounts[1] !== 3) return false;
             }
+            
             checkAllRules();
             return errorCells.size === 0;
         }
 
-        function showStatistics() {
+        function showVictory() {
             clearInterval(timerInterval);
             
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
@@ -1046,37 +887,20 @@
             const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
             document.getElementById('statTime').textContent = timeStr;
-            document.getElementById('statMoves').textContent = moveCount;
-            document.getElementById('statErrors').textContent = errorCount;
             document.getElementById('statHints').textContent = hintCount;
             
-            const percentile = Math.max(10, 99 - errorCount * 5 - hintCount * 10 - Math.floor(elapsed / 30));
-            document.getElementById('percentileCircle').style.strokeDasharray = `${percentile}, 100`;
-            document.getElementById('percentileText').textContent = `%${percentile}`;
-            document.getElementById('percentileDescription').textContent = `Tüm oyuncuların %${percentile}'inden daha iyisiniz.`;
-            
-            const achievementsDiv = document.getElementById('achievements');
-            achievementsDiv.innerHTML = '';
-            if (errorCount === 0) achievementsDiv.innerHTML += `<div class="achievement"><div class="achievement-icon">🏆</div><div><strong>Mükemmel!</strong><br>Hiç hata yapmadın.</div></div>`;
-            if (elapsed < 120) achievementsDiv.innerHTML += `<div class="achievement"><div class="achievement-icon">⚡</div><div><strong>Hızlısın!</strong><br>2 dakikadan kısa sürdü.</div></div>`;
-            if (hintCount === 0) achievementsDiv.innerHTML += `<div class="achievement"><div class="achievement-icon">🧠</div><div><strong>Usta Çözücü!</strong><br>İpucu kullanmadın.</div></div>`;
-
             document.getElementById('overlay').classList.add('show');
-            document.getElementById('statisticsSheet').classList.add('show');
+            document.getElementById('victoryModal').classList.add('show');
         }
 
-        function closeStatistics() {
+        function closeVictory() {
             document.getElementById('overlay').classList.remove('show');
-            document.getElementById('statisticsSheet').classList.remove('show');
+            document.getElementById('victoryModal').classList.remove('show');
         }
 
         function newGame() {
-            moveCount = 0;
-            errorCount = 0;
             hintCount = 0;
-            document.getElementById('moveCount').textContent = '0';
-            document.getElementById('errorCount').textContent = '0';
-            closeStatistics();
+            closeVictory();
             
             generatePuzzle();
             renderBoard();
@@ -1095,34 +919,160 @@
         }
 
         function getHint() {
-            let emptyCells = [];
+            // Find cells that can be determined by logic
+            let hintFound = false;
+            
+            // Priority 1: Complete rows/columns with 2 of one symbol
             for (let i = 0; i < 6; i++) {
+                let rowCounts = [0, 0], colCounts = [0, 0];
+                let rowEmpty = [], colEmpty = [];
+                
                 for (let j = 0; j < 6; j++) {
-                    if (gameBoard[i][j] === null && !fixedCells[i][j]) {
-                        emptyCells.push({i, j});
+                    if (gameBoard[i][j] !== null) {
+                        rowCounts[gameBoard[i][j]]++;
+                    } else {
+                        rowEmpty.push(j);
+                    }
+                    
+                    if (gameBoard[j][i] !== null) {
+                        colCounts[gameBoard[j][i]]++;
+                    } else {
+                        colEmpty.push(j);
+                    }
+                }
+                
+                // If one symbol has 3, fill empty cells with the other
+                if (rowCounts[0] === 3 && rowEmpty.length > 0) {
+                    const j = rowEmpty[0];
+                    if (!fixedCells[i][j]) {
+                        gameBoard[i][j] = 1;
+                        animateHint(i, j);
+                        hintFound = true;
+                        break;
+                    }
+                } else if (rowCounts[1] === 3 && rowEmpty.length > 0) {
+                    const j = rowEmpty[0];
+                    if (!fixedCells[i][j]) {
+                        gameBoard[i][j] = 0;
+                        animateHint(i, j);
+                        hintFound = true;
+                        break;
+                    }
+                }
+                
+                if (!hintFound && colCounts[0] === 3 && colEmpty.length > 0) {
+                    const j = colEmpty[0];
+                    if (!fixedCells[j][i]) {
+                        gameBoard[j][i] = 1;
+                        animateHint(j, i);
+                        hintFound = true;
+                        break;
+                    }
+                } else if (!hintFound && colCounts[1] === 3 && colEmpty.length > 0) {
+                    const j = colEmpty[0];
+                    if (!fixedCells[j][i]) {
+                        gameBoard[j][i] = 0;
+                        animateHint(j, i);
+                        hintFound = true;
+                        break;
                     }
                 }
             }
             
-            if (emptyCells.length === 0) {
-                alert('Tüm hücreler dolu!');
-                return;
+            // Priority 2: Prevent three in a row
+            if (!hintFound) {
+                for (let i = 0; i < 6 && !hintFound; i++) {
+                    for (let j = 0; j < 6 && !hintFound; j++) {
+                        if (gameBoard[i][j] === null && !fixedCells[i][j]) {
+                            // Check horizontal patterns
+                            if (j > 1 && gameBoard[i][j-1] !== null && gameBoard[i][j-1] === gameBoard[i][j-2]) {
+                                gameBoard[i][j] = 1 - gameBoard[i][j-1];
+                                animateHint(i, j);
+                                hintFound = true;
+                            } else if (j < 4 && gameBoard[i][j+1] !== null && gameBoard[i][j+1] === gameBoard[i][j+2]) {
+                                gameBoard[i][j] = 1 - gameBoard[i][j+1];
+                                animateHint(i, j);
+                                hintFound = true;
+                            } else if (j > 0 && j < 5 && gameBoard[i][j-1] !== null && gameBoard[i][j-1] === gameBoard[i][j+1]) {
+                                gameBoard[i][j] = 1 - gameBoard[i][j-1];
+                                animateHint(i, j);
+                                hintFound = true;
+                            }
+                            // Check vertical patterns
+                            else if (i > 1 && gameBoard[i-1][j] !== null && gameBoard[i-1][j] === gameBoard[i-2][j]) {
+                                gameBoard[i][j] = 1 - gameBoard[i-1][j];
+                                animateHint(i, j);
+                                hintFound = true;
+                            } else if (i < 4 && gameBoard[i+1][j] !== null && gameBoard[i+1][j] === gameBoard[i+2][j]) {
+                                gameBoard[i][j] = 1 - gameBoard[i+1][j];
+                                animateHint(i, j);
+                                hintFound = true;
+                            } else if (i > 0 && i < 5 && gameBoard[i-1][j] !== null && gameBoard[i-1][j] === gameBoard[i+1][j]) {
+                                gameBoard[i][j] = 1 - gameBoard[i-1][j];
+                                animateHint(i, j);
+                                hintFound = true;
+                            }
+                        }
+                    }
+                }
             }
             
-            hintCount++;
-            const { i, j } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-            gameBoard[i][j] = solution[i][j];
-            fixedCells[i][j] = true; 
-            
-            const cellEl = document.querySelector(`.cell[data-row='${i}'][data-col='${j}']`);
-            if (cellEl) {
-                 cellEl.classList.add('success');
-                 setTimeout(() => cellEl.classList.remove('success'), 1000);
+            // Priority 3: Use constraints
+            if (!hintFound) {
+                for (const c of constraints) {
+                    let r1 = c.row, c1 = c.col;
+                    let r2 = c.type === 'horizontal' ? r1 : r1 + 1;
+                    let c2 = c.type === 'horizontal' ? c1 + 1 : c1;
+                    
+                    if (gameBoard[r1][c1] !== null && gameBoard[r2][c2] === null && !fixedCells[r2][c2]) {
+                        gameBoard[r2][c2] = c.constraint === '=' ? gameBoard[r1][c1] : 1 - gameBoard[r1][c1];
+                        animateHint(r2, c2);
+                        hintFound = true;
+                        break;
+                    } else if (gameBoard[r1][c1] === null && gameBoard[r2][c2] !== null && !fixedCells[r1][c1]) {
+                        gameBoard[r1][c1] = c.constraint === '=' ? gameBoard[r2][c2] : 1 - gameBoard[r2][c2];
+                        animateHint(r1, c1);
+                        hintFound = true;
+                        break;
+                    }
+                }
             }
             
-            checkAllRules();
-            renderBoard();
-            if(checkVictory()) showStatistics();
+            // Last resort: Random correct placement
+            if (!hintFound) {
+                let emptyCells = [];
+                for (let i = 0; i < 6; i++) {
+                    for (let j = 0; j < 6; j++) {
+                        if (gameBoard[i][j] === null && !fixedCells[i][j]) {
+                            emptyCells.push({i, j});
+                        }
+                    }
+                }
+                
+                if (emptyCells.length > 0) {
+                    const {i, j} = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                    gameBoard[i][j] = solution[i][j];
+                    animateHint(i, j);
+                    hintFound = true;
+                }
+            }
+            
+            if (hintFound) {
+                hintCount++;
+                checkAllRules();
+                renderBoard();
+                if (checkVictory()) showVictory();
+            }
+        }
+
+        function animateHint(row, col) {
+            setTimeout(() => {
+                const cellEl = document.querySelector(`.cell[data-row='${row}'][data-col='${col}']`);
+                if (cellEl) {
+                    cellEl.classList.add('success');
+                    setTimeout(() => cellEl.classList.remove('success'), 1000);
+                }
+            }, 100);
         }
     </script>
 </body>
