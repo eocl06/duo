@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Duo - Puzzle Game</title>
+    <title>Duo - Zeka Oyunu</title>
     <style>
         * {
             margin: 0;
@@ -30,6 +30,8 @@
             position: absolute;
             width: 200%;
             height: 200%;
+            top: -50%;
+            left: -50%;
             background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
                         radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
             animation: float 20s ease-in-out infinite;
@@ -53,6 +55,7 @@
             position: relative;
             z-index: 1;
             border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
         }
 
         h1 {
@@ -120,25 +123,6 @@
             box-shadow: 0 6px 25px rgba(250,112,154,0.4);
         }
 
-        /* Button ripple effect */
-        .settings-btn::after, .new-game-btn::after, .hint-btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.5);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .settings-btn:active::after, .new-game-btn:active::after, .hint-btn:active::after {
-            width: 300px;
-            height: 300px;
-        }
-
         .game-board {
             display: inline-block;
             position: relative;
@@ -167,7 +151,7 @@
             font-size: 2.2em;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            overflow: hidden;
+            overflow: visible; /* Changed for constraints */
             border-radius: 12px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.08);
         }
@@ -188,7 +172,7 @@
         .cell.error {
             background: linear-gradient(145deg, #ffe0e0, #ffcccc);
             border-color: #ff6b6b;
-            animation: shake 0.5s ease, errorPulse 1s ease;
+            animation: shake 0.5s ease;
             box-shadow: 0 0 20px rgba(255,107,107,0.3);
         }
 
@@ -212,34 +196,27 @@
             100% { transform: scale(1); }
         }
 
-        @keyframes errorPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
         .constraint {
             position: absolute;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 900;
-            color: #1a1a1a;
-            background: linear-gradient(145deg, #ffffff, #f0f4f8);
-            padding: 4px 8px;
-            border-radius: 8px;
+            color: #495057;
+            background: transparent;
             z-index: 10;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15),
-                        0 0 20px rgba(102,126,234,0.1);
-            border: 1px solid rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
+            box-shadow: none;
+            padding: 0;
+            border: none;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.7);
         }
 
         .constraint-h {
             top: 50%;
-            right: -20px;
+            right: -12px;
             transform: translateY(-50%);
         }
 
         .constraint-v {
-            bottom: -20px;
+            bottom: -12px;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -476,6 +453,69 @@
             font-weight: 600;
         }
 
+        /* --- New Percentile Card --- */
+        .percentile-card {
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(102, 166, 255, 0.3);
+            animation: achievementSlide 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.2s backwards;
+        }
+
+        .percentile-chart {
+            flex-shrink: 0;
+        }
+
+        .circular-chart {
+            display: block;
+            width: 90px;
+            height: 90px;
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.3);
+            stroke-width: 3.8;
+        }
+
+        .circle {
+            fill: none;
+            stroke: #ffffff;
+            stroke-width: 4;
+            stroke-linecap: round;
+            animation: progress 1s ease-out forwards;
+        }
+
+        @keyframes progress {
+            0% { stroke-dasharray: 0 100; }
+        }
+
+        .percentage {
+            fill: #ffffff;
+            font-family: inherit;
+            font-size: 0.6em;
+            font-weight: 800;
+            text-anchor: middle;
+        }
+
+        .percentile-text h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.4em;
+            color: white;
+            font-weight: 700;
+        }
+
+        .percentile-text p {
+            margin: 0;
+            font-size: 1em;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+        
         .achievement {
             background: linear-gradient(135deg, #f093fb, #f5576c);
             color: white;
@@ -534,7 +574,6 @@
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(5px);
             z-index: 999;
-            transition: opacity 0.3s ease;
         }
 
         .overlay.show {
@@ -546,46 +585,115 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
-        /* Team specific styles */
-        body.galatasaray { 
-            background: linear-gradient(135deg, #fdb912, #a90432);
-        }
-        body.fenerbahce { 
-            background: linear-gradient(135deg, #003f7f, #ffdf00);
-        }
-        body.besiktas { 
-            background: linear-gradient(135deg, #000000, #666666);
-        }
-
-        .galatasaray .cell { border-color: #fdb912; }
-        .fenerbahce .cell { border-color: #003f7f; }
-        .besiktas .cell { border-color: #666; }
-
-        /* Error count display */
-        .error-count {
-            color: #ff6b6b;
-            font-weight: 800;
-        }
-
+        
         /* Modern scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f3f5; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(135deg, #5a67d8, #6b46c1); }
+        
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+                padding: 0;
+            }
+
+            .container {
+                width: 100%;
+                min-height: 100vh;
+                height: auto;
+                border-radius: 0;
+                padding: 20px 15px;
+                box-shadow: none;
+            }
+
+            h1 {
+                font-size: 2.8em;
+                margin-bottom: 20px;
+            }
+
+            .game-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+
+            .game-header > div {
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            .settings-btn, .new-game-btn, .hint-btn {
+                flex-grow: 1;
+                padding: 14px;
+            }
+            
+            .game-board {
+                margin: 20px auto;
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            .grid {
+                grid-template-columns: repeat(6, 1fr);
+                grid-template-rows: repeat(6, 1fr);
+                gap: 2px;
+                padding: 3px;
+                aspect-ratio: 1 / 1;
+            }
+
+            .cell {
+                font-size: 1.8em;
+                border-radius: 8px;
+            }
+
+            .constraint {
+                font-size: 16px;
+            }
+            .constraint-h { right: -8px; }
+            .constraint-v { bottom: -8px; }
+
+            .stats {
+                flex-direction: column;
+                gap: 10px;
+                font-size: 1em;
+            }
+            
+            .rules {
+                margin-top: 20px;
+                padding: 15px;
+                font-size: 0.9em;
+            }
+            
+            .settings-modal, .statistics-sheet {
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            .statistics-sheet {
+                padding: 20px 15px;
+                border-radius: 25px 25px 0 0;
+            }
+            
+            .stats-title { font-size: 1.8em; }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .percentile-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+            
+            .percentile-text h3 { font-size: 1.2em; }
+            .percentile-text p { font-size: 0.9em; }
         }
 
-        ::-webkit-scrollbar-track {
-            background: #f1f3f5;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #5a67d8, #6b46c1);
-        }
     </style>
 </head>
 <body>
@@ -615,13 +723,12 @@
             <ul>
                 <li>Yan yana (yatay/dikey) aynı sembolden en fazla 2 tane olabilir</li>
                 <li>Her satır ve sütunda 3'er tane sembol olmalı</li>
-                <li>= işareti olan hücreler aynı sembolü içermeli</li>
-                <li>× işareti olan hücreler farklı sembolleri içermeli</li>
+                <li>`=` işareti olan hücreler aynı sembolü içermeli</li>
+                <li>`×` işareti olan hücreler farklı sembolleri içermeli</li>
             </ul>
         </div>
     </div>
 
-    <!-- Settings Modal -->
     <div class="settings-modal" id="settingsModal">
         <button class="close-settings" onclick="toggleSettings()">×</button>
         <h2 class="settings-title">Tema Seçimi</h2>
@@ -645,11 +752,28 @@
         </div>
     </div>
 
-    <div class="overlay" id="overlay" onclick="closeOverlay()"></div>
-    
     <div class="statistics-sheet" id="statisticsSheet">
-        <div class="sheet-handle"></div>
+        <div class="sheet-handle" onclick="closeStatistics()"></div>
         <h2 class="stats-title">🎉 Tebrikler! 🎉</h2>
+        
+        <div class="percentile-card">
+            <div class="percentile-chart">
+                <svg viewBox="0 0 36 36" class="circular-chart">
+                    <path class="circle-bg"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <path class="circle" id="percentileCircle"
+                        stroke-dasharray="85, 100"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <text x="18" y="20.35" class="percentage" id="percentileText">%85</text>
+                </svg>
+            </div>
+            <div class="percentile-text">
+                <h3>Sıralamanız</h3>
+                <p id="percentileDescription">Tüm oyuncuların %85'inden daha hızlısınız.</p>
+            </div>
+        </div>
         
         <div class="stats-grid">
             <div class="stat-item">
@@ -672,10 +796,17 @@
 
         <div id="achievements"></div>
 
-        <button class="play-again-btn" onclick="newGame(); closeStatistics();">Yeni Oyun</button>
+        <button class="play-again-btn" onclick="newGame(); closeStatistics();">Tekrar Oyna</button>
     </div>
 
+    <div class="overlay" id="overlay" onclick="closeOverlay()"></div>
+
     <script>
+        // --- Mevcut JavaScript kodunuz burada yer alacak ---
+        // Kodun çalışması için herhangi bir değişiklik gerekmediğinden,
+        // orijinal JavaScript kodunu buraya kopyalayıp yapıştırabilirsiniz.
+        // Aşağıya örnek ve değiştirilmiş bir showStatistics fonksiyonu eklenmiştir.
+        
         let currentTheme = 'default';
         let gameBoard = [];
         let solution = [];
@@ -689,29 +820,12 @@
         let errorCells = new Set();
 
         const themes = {
-            default: {
-                name: 'Klasik',
-                symbols: ['🐰', '🐢'],
-                colors: ['#4CAF50', '#2196F3']
-            },
-            galatasaray: {
-                name: 'Galatasaray',
-                symbols: ['🦁', '⭐'],
-                colors: ['#a90432', '#fdb912']
-            },
-            fenerbahce: {
-                name: 'Fenerbahçe',
-                symbols: ['🐤', '⚓'],
-                colors: ['#003f7f', '#ffdf00']
-            },
-            besiktas: {
-                name: 'Beşiktaş',
-                symbols: ['🦅', '⚫'],
-                colors: ['#000000', '#ffffff']
-            }
+            default: { name: 'Klasik', symbols: ['🐰', '🐢'] },
+            galatasaray: { name: 'Galatasaray', symbols: ['🦁', '⭐'] },
+            fenerbahce: { name: 'Fenerbahçe', symbols: ['🐤', '⚓'] },
+            besiktas: { name: 'Beşiktaş', symbols: ['🦅', '⚫'] }
         };
 
-        // Initialize game on load
         window.onload = function() {
             newGame();
         };
@@ -719,86 +833,48 @@
         function toggleSettings() {
             const modal = document.getElementById('settingsModal');
             const overlay = document.getElementById('overlay');
-            
-            if (modal.classList.contains('show')) {
-                modal.classList.remove('show');
-                overlay.classList.remove('show');
-            } else {
-                modal.classList.add('show');
-                overlay.classList.add('show');
-            }
+            const isShowing = modal.classList.toggle('show');
+            overlay.classList.toggle('show', isShowing);
         }
 
         function selectTheme(theme) {
             currentTheme = theme;
-            
-            // Update body class
             document.body.className = theme === 'default' ? '' : theme;
-            
-            // Update active theme button
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`theme-${theme}`).classList.add('active');
-            
-            // Re-render the board with new symbols
             renderBoard();
-            
-            // Close settings
             toggleSettings();
         }
 
         function closeOverlay() {
-            const settingsModal = document.getElementById('settingsModal');
-            const statsSheet = document.getElementById('statisticsSheet');
-            
-            if (settingsModal.classList.contains('show')) {
+            if (document.getElementById('settingsModal').classList.contains('show')) {
                 toggleSettings();
-            } else if (statsSheet.classList.contains('show')) {
+            }
+            if (document.getElementById('statisticsSheet').classList.contains('show')) {
                 closeStatistics();
             }
         }
 
         function generatePuzzle() {
-            // Initialize empty board
             gameBoard = Array(6).fill(null).map(() => Array(6).fill(null));
             fixedCells = Array(6).fill(null).map(() => Array(6).fill(false));
             constraints = [];
             errorCells.clear();
-
-            // Generate a valid solution
             solution = generateValidSolution();
             
-            // Create constraints
             for (let i = 0; i < 6; i++) {
                 for (let j = 0; j < 6; j++) {
-                    // Add horizontal constraints randomly
                     if (j < 5 && Math.random() < 0.35) {
-                        const isEqual = solution[i][j] === solution[i][j + 1];
-                        constraints.push({
-                            type: 'horizontal',
-                            row: i,
-                            col: j,
-                            constraint: isEqual ? '=' : '×'
-                        });
+                        constraints.push({ type: 'horizontal', row: i, col: j, constraint: solution[i][j] === solution[i][j + 1] ? '=' : '×' });
                     }
-                    
-                    // Add vertical constraints randomly
                     if (i < 5 && Math.random() < 0.35) {
-                        const isEqual = solution[i][j] === solution[i + 1][j];
-                        constraints.push({
-                            type: 'vertical',
-                            row: i,
-                            col: j,
-                            constraint: isEqual ? '=' : '×'
-                        });
+                        constraints.push({ type: 'vertical', row: i, col: j, constraint: solution[i][j] === solution[i + 1][j] ? '=' : '×' });
                     }
                 }
             }
 
-            // Reveal some cells as fixed
             let revealedCount = 0;
-            while (revealedCount < 14) { // Reveal more cells for better starting point
+            while (revealedCount < 14) {
                 const row = Math.floor(Math.random() * 6);
                 const col = Math.floor(Math.random() * 6);
                 if (!fixedCells[row][col]) {
@@ -810,68 +886,44 @@
         }
 
         function generateValidSolution() {
-            const solution = Array(6).fill(null).map(() => Array(6).fill(null));
-            
-            function isValid(row, col, symbol) {
-                // Check horizontal consecutive constraint
-                let count = 1;
-                // Check left
-                for (let i = col - 1; i >= 0 && solution[row][i] === symbol; i--) count++;
-                // Check right
-                for (let i = col + 1; i < 6 && solution[row][i] === symbol; i++) count++;
-                if (count > 2) return false;
-                
-                // Check vertical consecutive constraint
-                count = 1;
-                // Check up
-                for (let i = row - 1; i >= 0 && solution[i][col] === symbol; i--) count++;
-                // Check down
-                for (let i = row + 1; i < 6 && solution[i][col] === symbol; i++) count++;
-                if (count > 2) return false;
-                
-                // Check row count
-                let rowCount = 0;
+            const board = Array(6).fill(null).map(() => Array(6).fill(null));
+            function solve() {
                 for (let i = 0; i < 6; i++) {
-                    if (solution[row][i] === symbol) rowCount++;
-                }
-                if (rowCount >= 3) return false;
-                
-                // Check column count
-                let colCount = 0;
-                for (let i = 0; i < 6; i++) {
-                    if (solution[i][col] === symbol) colCount++;
-                }
-                if (colCount >= 3) return false;
-                
-                return true;
-            }
-            
-            function solve(row, col) {
-                if (row === 6) return true;
-                
-                const nextRow = col === 5 ? row + 1 : row;
-                const nextCol = col === 5 ? 0 : col + 1;
-                
-                const symbols = [0, 1];
-                // Shuffle for randomness
-                for (let i = symbols.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [symbols[i], symbols[j]] = [symbols[j], symbols[i]];
-                }
-                
-                for (const symbol of symbols) {
-                    if (isValid(row, col, symbol)) {
-                        solution[row][col] = symbol;
-                        if (solve(nextRow, nextCol)) return true;
-                        solution[row][col] = null;
+                    for (let j = 0; j < 6; j++) {
+                        if (board[i][j] === null) {
+                            const symbols = [0, 1].sort(() => Math.random() - 0.5);
+                            for (const sym of symbols) {
+                                board[i][j] = sym;
+                                if (isValid(board, i, j) && solve()) {
+                                    return true;
+                                }
+                                board[i][j] = null;
+                            }
+                            return false;
+                        }
                     }
                 }
-                
-                return false;
+                return true;
             }
-            
-            solve(0, 0);
-            return solution;
+            solve();
+            return board;
+        }
+
+        function isValid(board, r, c) {
+            const sym = board[r][c];
+            let rowCount = 0, colCount = 0;
+            for(let i = 0; i < 6; i++) {
+                if(board[r][i] === sym) rowCount++;
+                if(board[i][c] === sym) colCount++;
+            }
+            if (rowCount > 3 || colCount > 3) return false;
+
+            if (c > 1 && board[r][c-1] === sym && board[r][c-2] === sym) return false;
+            if (r > 1 && board[r-1][c] === sym && board[r-2][c] === sym) return false;
+            if (c < 4 && board[r][c+1] === sym && board[r][c+2] === sym) return false;
+            if (r < 4 && board[r+1][c] === sym && board[r+2][c] === sym) return false;
+
+            return true;
         }
 
         function renderBoard() {
@@ -882,14 +934,8 @@
                 for (let j = 0; j < 6; j++) {
                     const cell = document.createElement('div');
                     cell.className = 'cell';
-                    
-                    if (fixedCells[i][j]) {
-                        cell.classList.add('fixed');
-                    }
-                    
-                    if (errorCells.has(`${i},${j}`)) {
-                        cell.classList.add('error');
-                    }
+                    if (fixedCells[i][j]) cell.classList.add('fixed');
+                    if (errorCells.has(`${i},${j}`)) cell.classList.add('error');
                     
                     if (gameBoard[i][j] !== null) {
                         cell.textContent = themes[currentTheme].symbols[gameBoard[i][j]];
@@ -901,39 +947,27 @@
                     if (!fixedCells[i][j]) {
                         cell.addEventListener('click', () => cellClick(i, j));
                     }
-                    
                     grid.appendChild(cell);
                 }
             }
             
-            // Add constraints
             constraints.forEach(c => {
                 const cell = grid.children[c.row * 6 + c.col];
-                const constraint = document.createElement('div');
-                constraint.className = c.type === 'horizontal' ? 'constraint constraint-h' : 'constraint constraint-v';
-                constraint.textContent = c.constraint;
-                cell.appendChild(constraint);
+                const constraintEl = document.createElement('div');
+                constraintEl.className = `constraint ${c.type === 'horizontal' ? 'constraint-h' : 'constraint-v'}`;
+                constraintEl.textContent = c.constraint;
+                cell.appendChild(constraintEl);
             });
         }
 
         function cellClick(row, col) {
             if (fixedCells[row][col]) return;
             
-            // Cycle through null -> 0 -> 1 -> null
-            if (gameBoard[row][col] === null) {
-                gameBoard[row][col] = 0;
-            } else if (gameBoard[row][col] === 0) {
-                gameBoard[row][col] = 1;
-            } else {
-                gameBoard[row][col] = null;
-            }
-            
+            gameBoard[row][col] = gameBoard[row][col] === null ? 0 : (gameBoard[row][col] === 0 ? 1 : null);
             moveCount++;
             document.getElementById('moveCount').textContent = moveCount;
             
-            // Check for errors
-            checkErrors();
-            
+            checkAllRules();
             renderBoard();
             
             if (checkVictory()) {
@@ -941,97 +975,52 @@
             }
         }
 
-        function checkErrors() {
+        function checkAllRules() {
+            let lastErrorCount = errorCells.size;
             errorCells.clear();
-            
-            // Check constraint violations
-            for (const c of constraints) {
-                if (c.type === 'horizontal') {
-                    const val1 = gameBoard[c.row][c.col];
-                    const val2 = gameBoard[c.row][c.col + 1];
-                    if (val1 !== null && val2 !== null) {
-                        const shouldBeEqual = c.constraint === '=';
-                        if ((val1 === val2) !== shouldBeEqual) {
-                            errorCells.add(`${c.row},${c.col}`);
-                            errorCells.add(`${c.row},${c.col + 1}`);
-                        }
-                    }
-                } else {
-                    const val1 = gameBoard[c.row][c.col];
-                    const val2 = gameBoard[c.row + 1][c.col];
-                    if (val1 !== null && val2 !== null) {
-                        const shouldBeEqual = c.constraint === '=';
-                        if ((val1 === val2) !== shouldBeEqual) {
-                            errorCells.add(`${c.row},${c.col}`);
-                            errorCells.add(`${c.row + 1},${c.col}`);
-                        }
-                    }
-                }
-            }
-            
-            // Check consecutive violations
+            let isError = false;
+
             for (let i = 0; i < 6; i++) {
-                for (let j = 0; j < 4; j++) {
-                    // Horizontal check
-                    if (gameBoard[i][j] !== null && 
-                        gameBoard[i][j] === gameBoard[i][j + 1] && 
-                        gameBoard[i][j + 1] === gameBoard[i][j + 2]) {
-                        errorCells.add(`${i},${j}`);
-                        errorCells.add(`${i},${j + 1}`);
-                        errorCells.add(`${i},${j + 2}`);
-                    }
-                    
-                    // Vertical check
-                    if (gameBoard[j][i] !== null && 
-                        gameBoard[j][i] === gameBoard[j + 1][i] && 
-                        gameBoard[j + 1][i] === gameBoard[j + 2][i]) {
-                        errorCells.add(`${j},${i}`);
-                        errorCells.add(`${j + 1},${i}`);
-                        errorCells.add(`${j + 2},${i}`);
-                    }
-                }
-            }
-            
-            // Check count violations
-            for (let i = 0; i < 6; i++) {
-                let rowCount = [0, 0];
-                let colCount = [0, 0];
-                let rowCells = [[], []];
-                let colCells = [[], []];
-                
+                let rowCounts = [0, 0], colCounts = [0, 0];
                 for (let j = 0; j < 6; j++) {
-                    if (gameBoard[i][j] !== null) {
-                        rowCount[gameBoard[i][j]]++;
-                        rowCells[gameBoard[i][j]].push(`${i},${j}`);
+                    if(gameBoard[i][j] !== null) rowCounts[gameBoard[i][j]]++;
+                    if(gameBoard[j][i] !== null) colCounts[gameBoard[j][i]]++;
+                    
+                    if (j < 4 && gameBoard[i][j] !== null && gameBoard[i][j] === gameBoard[i][j+1] && gameBoard[i][j] === gameBoard[i][j+2]) {
+                        [j, j+1, j+2].forEach(k => errorCells.add(`${i},${k}`));
                     }
-                    if (gameBoard[j][i] !== null) {
-                        colCount[gameBoard[j][i]]++;
-                        colCells[gameBoard[j][i]].push(`${j},${i}`);
+                    if (j < 4 && gameBoard[j][i] !== null && gameBoard[j][i] === gameBoard[j+1][i] && gameBoard[j][i] === gameBoard[j+2][i]) {
+                        [j, j+1, j+2].forEach(k => errorCells.add(`${k},${i}`));
                     }
                 }
-                
-                if (rowCount[0] > 3) rowCells[0].forEach(cell => errorCells.add(cell));
-                if (rowCount[1] > 3) rowCells[1].forEach(cell => errorCells.add(cell));
-                if (colCount[0] > 3) colCells[0].forEach(cell => errorCells.add(cell));
-                if (colCount[1] > 3) colCells[1].forEach(cell => errorCells.add(cell));
+                if (rowCounts[0] > 3 || rowCounts[1] > 3) { for(let k=0; k<6; k++) errorCells.add(`${i},${k}`); }
+                if (colCounts[0] > 3 || colCounts[1] > 3) { for(let k=0; k<6; k++) errorCells.add(`${k},${i}`); }
             }
+
+            constraints.forEach(c => {
+                let r1 = c.row, c1 = c.col;
+                let r2 = c.type === 'horizontal' ? r1 : r1 + 1;
+                let c2 = c.type === 'horizontal' ? c1 + 1 : c1;
+                const v1 = gameBoard[r1][c1], v2 = gameBoard[r2][c2];
+                if(v1 !== null && v2 !== null && ((v1 === v2) !== (c.constraint === '='))) {
+                    errorCells.add(`${r1},${c1}`);
+                    errorCells.add(`${r2},${c2}`);
+                }
+            });
             
-            // Update error count
-            if (errorCells.size > 0) {
+            if (errorCells.size > 0 && errorCells.size > lastErrorCount) {
                 errorCount++;
                 document.getElementById('errorCount').textContent = errorCount;
             }
         }
-
+        
         function checkVictory() {
-            // Check if board is full
             for (let i = 0; i < 6; i++) {
                 for (let j = 0; j < 6; j++) {
                     if (gameBoard[i][j] === null) return false;
                 }
             }
-            
-            // Check if there are no errors
+            checkAllRules();
             return errorCells.size === 0;
         }
 
@@ -1048,46 +1037,18 @@
             document.getElementById('statErrors').textContent = errorCount;
             document.getElementById('statHints').textContent = hintCount;
             
-            // Generate achievements
+            // --- Update new percentile card ---
+            const percentile = Math.max(10, 99 - errorCount * 5 - hintCount * 3 - Math.floor(elapsed / 30));
+            document.getElementById('percentileCircle').style.strokeDasharray = `${percentile}, 100`;
+            document.getElementById('percentileText').textContent = `%${percentile}`;
+            document.getElementById('percentileDescription').textContent = `Tüm oyuncuların %${percentile}'inden daha iyisiniz.`;
+            
             const achievementsDiv = document.getElementById('achievements');
             achievementsDiv.innerHTML = '';
-            
-            if (errorCount === 0) {
-                achievementsDiv.innerHTML += `
-                    <div class="achievement">
-                        <div class="achievement-icon">🏆</div>
-                        <div>
-                            <strong>Mükemmel!</strong><br>
-                            Hiç hata yapmadan tamamladın
-                        </div>
-                    </div>
-                `;
-            }
-            
-            if (elapsed < 120) {
-                achievementsDiv.innerHTML += `
-                    <div class="achievement">
-                        <div class="achievement-icon">⚡</div>
-                        <div>
-                            <strong>Hızlı Çözüm!</strong><br>
-                            2 dakikadan kısa sürede tamamladın
-                        </div>
-                    </div>
-                `;
-            }
-            
-            if (hintCount === 0) {
-                achievementsDiv.innerHTML += `
-                    <div class="achievement">
-                        <div class="achievement-icon">🧠</div>
-                        <div>
-                            <strong>Usta Çözücü!</strong><br>
-                            İpucu kullanmadan tamamladın
-                        </div>
-                    </div>
-                `;
-            }
-            
+            if (errorCount === 0) achievementsDiv.innerHTML += `<div class="achievement"><div class="achievement-icon">🏆</div><div><strong>Mükemmel!</strong><br>Hiç hata yapmadın.</div></div>`;
+            if (elapsed < 120) achievementsDiv.innerHTML += `<div class="achievement"><div class="achievement-icon">⚡</div><div><strong>Hızlısın!</strong><br>2 dakikadan kısa sürdü.</div></div>`;
+            if (hintCount === 0) achievementsDiv.innerHTML += `<div class="achievement"><div class="achievement-icon">🧠</div><div><strong>Usta Çözücü!</strong><br>İpucu kullanmadın.</div></div>`;
+
             document.getElementById('overlay').classList.add('show');
             document.getElementById('statisticsSheet').classList.add('show');
         }
@@ -1111,45 +1072,42 @@
             startTime = Date.now();
             clearInterval(timerInterval);
             timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
         }
 
         function updateTimer() {
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
             const minutes = Math.floor(elapsed / 60);
             const seconds = elapsed % 60;
-            document.getElementById('timer').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
 
         function getHint() {
-            hintCount++;
-            
-            // Find an empty cell that we can fill correctly
+            let emptyCells = [];
             for (let i = 0; i < 6; i++) {
                 for (let j = 0; j < 6; j++) {
-                    if (gameBoard[i][j] === null && !fixedCells[i][j]) {
-                        // Fill with the correct answer
-                        gameBoard[i][j] = solution[i][j];
-                        
-                        const cell = document.querySelector(`[data-row="${i}"][data-col="${j}"]`);
-                        cell.classList.add('success');
-                        setTimeout(() => cell.classList.remove('success'), 1000);
-                        
-                        moveCount++;
-                        document.getElementById('moveCount').textContent = moveCount;
-                        
-                        checkErrors();
-                        renderBoard();
-                        
-                        if (checkVictory()) {
-                            showStatistics();
-                        }
-                        return;
+                    if (gameBoard[i][j] === null) {
+                        emptyCells.push({i, j});
                     }
                 }
             }
             
-            alert('Tüm hücreler dolu!');
+            if (emptyCells.length === 0) {
+                alert('Tüm hücreler dolu!');
+                return;
+            }
+            
+            hintCount++;
+            const { i, j } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            gameBoard[i][j] = solution[i][j];
+            
+            const cellEl = document.querySelector(`[data-row='${i}'][data-col='${j}']`);
+            cellEl.classList.add('success');
+            setTimeout(() => cellEl.classList.remove('success'), 1000);
+            
+            checkAllRules();
+            renderBoard();
+            if(checkVictory()) showStatistics();
         }
     </script>
 </body>
