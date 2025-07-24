@@ -21,10 +21,8 @@
             min-height: 100vh;
             transition: background 0.6s ease;
             position: relative;
-            /* Düzeltme: Sayfanın kaydırılmasına izin vermek için "overflow: hidden;" kuralı kaldırıldı. */
         }
 
-        /* Animated background particles */
         body::before {
             content: '';
             position: absolute;
@@ -35,7 +33,7 @@
             background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
                         radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
             animation: float 20s ease-in-out infinite;
-            z-index: -1; /* Arka planın içerik arkasında kalmasını sağlar */
+            z-index: -1;
         }
 
         @keyframes float {
@@ -57,7 +55,7 @@
             z-index: 1;
             border: 1px solid rgba(255,255,255,0.2);
             transition: all 0.3s ease;
-            margin: 20px 0; /* İçerik uzadığında yukarıdan ve aşağıdan boşluk bırakır */
+            margin: 20px 0;
         }
 
         h1 {
@@ -153,7 +151,7 @@
             font-size: 2.2em;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            overflow: visible; /* Changed for constraints */
+            overflow: visible;
             border-radius: 12px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.08);
         }
@@ -279,8 +277,8 @@
             font-weight: bold;
         }
 
-        /* Settings Modal */
-        .settings-modal {
+        /* Modal Base Styles (for Settings and Statistics) */
+        .modal {
             display: none;
             position: fixed;
             top: 50%;
@@ -292,10 +290,19 @@
             border-radius: 25px;
             box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
             z-index: 1000;
-            max-width: 420px;
             width: 90%;
             border: 1px solid rgba(255,255,255,0.2);
             animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .settings-modal {
+             max-width: 420px;
+        }
+
+        .statistics-modal {
+             max-width: 500px;
         }
 
         @keyframes modalSlideIn {
@@ -309,16 +316,21 @@
             }
         }
 
-        .settings-modal.show {
+        .modal.show {
             display: block;
         }
 
-        .settings-title {
+        .modal-title {
             font-size: 1.8em;
             margin-bottom: 25px;
+            text-align: center;
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+        
+        .stats-title {
+             font-size: 2.2em;
         }
 
         .theme-options {
@@ -357,7 +369,7 @@
             font-size: 1.6em;
         }
 
-        .close-settings {
+        .close-modal-btn {
             position: absolute;
             top: 20px;
             right: 20px;
@@ -375,48 +387,10 @@
             justify-content: center;
         }
 
-        .close-settings:hover {
+        .close-modal-btn:hover {
             background: #f8f9fa;
             color: #495057;
             transform: rotate(90deg);
-        }
-
-        /* Bottom sheet statistics */
-        .statistics-sheet {
-            position: fixed;
-            bottom: -100%;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border-radius: 35px 35px 0 0;
-            padding: 35px;
-            box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.2);
-            transition: bottom 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        .statistics-sheet.show {
-            bottom: 0;
-        }
-
-        .sheet-handle {
-            width: 60px;
-            height: 6px;
-            background: linear-gradient(135deg, #dee2e6, #ced4da);
-            border-radius: 3px;
-            margin: 0 auto 25px;
-        }
-
-        .stats-title {
-            font-size: 2.2em;
-            margin-bottom: 25px;
-            text-align: center;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
         .stats-grid {
@@ -455,7 +429,6 @@
             font-weight: 600;
         }
 
-        /* --- New Percentile Card --- */
         .percentile-card {
             background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
             border-radius: 20px;
@@ -588,13 +561,11 @@
             to { opacity: 1; }
         }
         
-        /* Modern scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f3f5; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: linear-gradient(135deg, #5a67d8, #6b46c1); }
         
-        /* --- Responsive Design --- */
         @media (max-width: 768px) {
             body {
                 align-items: flex-start;
@@ -670,14 +641,13 @@
                 font-size: 0.9em;
             }
             
-            .settings-modal, .statistics-sheet {
+            .modal {
                 width: 100%;
                 max-width: 100%;
-            }
-            
-            .statistics-sheet {
+                height: 100%;
+                max-height: 100vh;
+                border-radius: 0;
                 padding: 20px 15px;
-                border-radius: 25px 25px 0 0;
             }
             
             .stats-title { font-size: 1.8em; }
@@ -696,7 +666,6 @@
             .percentile-text h3 { font-size: 1.2em; }
             .percentile-text p { font-size: 0.9em; }
         }
-
     </style>
 </head>
 <body>
@@ -732,9 +701,9 @@
         </div>
     </div>
 
-    <div class="settings-modal" id="settingsModal">
-        <button class="close-settings" onclick="toggleSettings()">×</button>
-        <h2 class="settings-title">Tema Seçimi</h2>
+    <div class="modal settings-modal" id="settingsModal">
+        <button class="close-modal-btn" onclick="toggleSettings()">×</button>
+        <h2 class="modal-title">Tema Seçimi</h2>
         <div class="theme-options">
             <button class="theme-btn active" onclick="selectTheme('default')" id="theme-default">
                 <span>Klasik</span>
@@ -755,9 +724,9 @@
         </div>
     </div>
 
-    <div class="statistics-sheet" id="statisticsSheet">
-        <div class="sheet-handle" onclick="closeStatistics()"></div>
-        <h2 class="stats-title">🎉 Tebrikler! 🎉</h2>
+    <div class="modal statistics-modal" id="statisticsSheet">
+        <button class="close-modal-btn" onclick="closeStatistics()">×</button>
+        <h2 class="modal-title stats-title">🎉 Tebrikler! 🎉</h2>
         
         <div class="percentile-card">
             <div class="percentile-chart">
@@ -774,7 +743,7 @@
             </div>
             <div class="percentile-text">
                 <h3>Sıralamanız</h3>
-                <p id="percentileDescription">Tüm oyuncuların %85'inden daha hızlısınız.</p>
+                <p id="percentileDescription">Tüm oyuncuların %85'inden daha iyisiniz.</p>
             </div>
         </div>
         
@@ -837,7 +806,6 @@
 
         function selectTheme(theme) {
             currentTheme = theme;
-            document.body.className = theme === 'default' ? '' : theme;
             document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`theme-${theme}`).classList.add('active');
             renderBoard();
@@ -854,25 +822,45 @@
         }
 
         function generatePuzzle() {
-            gameBoard = Array(6).fill(null).map(() => Array(6).fill(null));
+            gameBoard = Array(6).fill(null).map(() => Array(6).fill(false).map(() => null));
             fixedCells = Array(6).fill(null).map(() => Array(6).fill(false));
             constraints = [];
             errorCells.clear();
             solution = generateValidSolution();
             
+            // --- YENİ KISITLAMA OLUŞTURMA MANTIĞI ---
+            const allPossibleConstraints = [];
             for (let i = 0; i < 6; i++) {
                 for (let j = 0; j < 6; j++) {
-                    if (j < 5 && Math.random() < 0.35) {
-                        constraints.push({ type: 'horizontal', row: i, col: j, constraint: solution[i][j] === solution[i][j + 1] ? '=' : '×' });
+                    // Yatay kısıtlamalar
+                    if (j < 5) {
+                        allPossibleConstraints.push({ type: 'horizontal', row: i, col: j });
                     }
-                    if (i < 5 && Math.random() < 0.35) {
-                        constraints.push({ type: 'vertical', row: i, col: j, constraint: solution[i][j] === solution[i + 1][j] ? '=' : '×' });
+                    // Dikey kısıtlamalar
+                    if (i < 5) {
+                        allPossibleConstraints.push({ type: 'vertical', row: i, col: j });
                     }
                 }
             }
 
+            // Kısıtlamaları karıştır ve ilk 10'unu al
+            allPossibleConstraints.sort(() => Math.random() - 0.5);
+            const selectedConstraints = allPossibleConstraints.slice(0, 10);
+
+            constraints = selectedConstraints.map(c => {
+                let val;
+                if (c.type === 'horizontal') {
+                    val = solution[c.row][c.col] === solution[c.row][c.col + 1] ? '=' : '×';
+                } else { // vertical
+                    val = solution[c.row][c.col] === solution[c.row + 1][c.col] ? '=' : '×';
+                }
+                return { ...c, constraint: val };
+            });
+            // --- KISITLAMA MANTIĞI SONU ---
+
+
             let revealedCount = 0;
-            while (revealedCount < 8) { // Değişiklik: İpucu sayısı 14'ten 8'e düşürüldü.
+            while (revealedCount < 8) {
                 const row = Math.floor(Math.random() * 6);
                 const col = Math.floor(Math.random() * 6);
                 if (!fixedCells[row][col]) {
@@ -892,7 +880,7 @@
                             const symbols = [0, 1].sort(() => Math.random() - 0.5);
                             for (const sym of symbols) {
                                 board[i][j] = sym;
-                                if (isValid(board, i, j) && solve()) {
+                                if (isPlacementValid(board, i, j) && solve()) {
                                     return true;
                                 }
                                 board[i][j] = null;
@@ -907,8 +895,10 @@
             return board;
         }
 
-        function isValid(board, r, c) {
+        function isPlacementValid(board, r, c) {
             const sym = board[r][c];
+            
+            // Kural 2: Her satır ve sütunda 3'er tane sembol olmalı (aşmamalı)
             let rowCount = 0, colCount = 0;
             for(let i = 0; i < 6; i++) {
                 if(board[r][i] === sym) rowCount++;
@@ -916,12 +906,25 @@
             }
             if (rowCount > 3 || colCount > 3) return false;
 
+            // Kural 1: Yan yana 3 aynı sembol olamaz
             if (c > 1 && board[r][c-1] === sym && board[r][c-2] === sym) return false;
             if (r > 1 && board[r-1][c] === sym && board[r-2][c] === sym) return false;
-            if (c < 4 && board[r][c+1] === sym && board[r][c+2] === sym) return false;
-            if (r < 4 && board[r+1][c] === sym && board[r+2][c] === sym) return false;
             if (c > 0 && c < 5 && board[r][c-1] === sym && board[r][c+1] === sym) return false;
             if (r > 0 && r < 5 && board[r-1][c] === sym && board[r+1][c] === sym) return false;
+            
+            // Eğer satır/sütun dolduysa, sayıların eşit (3'e 3) olduğundan emin ol
+            if (board[r].every(val => val !== null)) {
+                let count0 = board[r].filter(v => v===0).length;
+                if(count0 !== 3) return false;
+            }
+            let colFilled = true;
+            for(let i=0; i<6; i++) if(board[i][c] === null) colFilled = false;
+            if(colFilled){
+                let count0 = 0;
+                for(let i=0; i<6; i++) if(board[i][c] === 0) count0++;
+                if(count0 !== 3) return false;
+            }
+
             return true;
         }
 
@@ -952,10 +955,12 @@
             
             constraints.forEach(c => {
                 const cell = grid.children[c.row * 6 + c.col];
-                const constraintEl = document.createElement('div');
-                constraintEl.className = `constraint ${c.type === 'horizontal' ? 'constraint-h' : 'constraint-v'}`;
-                constraintEl.textContent = c.constraint;
-                cell.appendChild(constraintEl);
+                if(cell){
+                    const constraintEl = document.createElement('div');
+                    constraintEl.className = `constraint ${c.type === 'horizontal' ? 'constraint-h' : 'constraint-v'}`;
+                    constraintEl.textContent = c.constraint;
+                    cell.appendChild(constraintEl);
+                }
             });
         }
 
@@ -979,22 +984,27 @@
             errorCells.clear();
 
             for (let i = 0; i < 6; i++) {
+                // Hata 1: Satır/Sütunlarda 3'ten fazla aynı sembol
                 let rowCounts = [0, 0], colCounts = [0, 0];
                 for (let j = 0; j < 6; j++) {
                     if(gameBoard[i][j] !== null) rowCounts[gameBoard[i][j]]++;
                     if(gameBoard[j][i] !== null) colCounts[gameBoard[j][i]]++;
-                    
-                    if (j < 4 && gameBoard[i][j] !== null && gameBoard[i][j] === gameBoard[i][j+1] && gameBoard[i][j] === gameBoard[i][j+2]) {
-                        [j, j+1, j+2].forEach(k => errorCells.add(`${i},${k}`));
-                    }
-                    if (j < 4 && gameBoard[j][i] !== null && gameBoard[j][i] === gameBoard[j+1][i] && gameBoard[j][i] === gameBoard[j+2][i]) {
-                        [j, j+1, j+2].forEach(k => errorCells.add(`${k},${i}`));
-                    }
                 }
                 if (rowCounts[0] > 3 || rowCounts[1] > 3) { for(let k=0; k<6; k++) if(gameBoard[i][k] !== null) errorCells.add(`${i},${k}`); }
                 if (colCounts[0] > 3 || colCounts[1] > 3) { for(let k=0; k<6; k++) if(gameBoard[k][i] !== null) errorCells.add(`${k},${i}`); }
+                
+                // Hata 2: Yan yana 3 aynı sembol
+                 for (let j = 0; j < 4; j++) {
+                    if (gameBoard[i][j] !== null && gameBoard[i][j] === gameBoard[i][j+1] && gameBoard[i][j] === gameBoard[i][j+2]) {
+                        [j, j+1, j+2].forEach(k => errorCells.add(`${i},${k}`));
+                    }
+                    if (gameBoard[j][i] !== null && gameBoard[j][i] === gameBoard[j+1][i] && gameBoard[j][i] === gameBoard[j+2][i]) {
+                        [j, j+1, j+2].forEach(k => errorCells.add(`${k},${i}`));
+                    }
+                }
             }
 
+            // Hata 3: Kısıtlama ihlalleri
             constraints.forEach(c => {
                 let r1 = c.row, c1 = c.col;
                 let r2 = c.type === 'horizontal' ? r1 : r1 + 1;
@@ -1006,7 +1016,7 @@
                 }
             });
             
-            if (errorCells.size > 0 && lastErrorCount === 0) {
+            if (errorCells.size > 0 && lastErrorCount === 0 && moveCount > 0) {
                 errorCount++;
                 document.getElementById('errorCount').textContent = errorCount;
             }
@@ -1014,9 +1024,14 @@
         
         function checkVictory() {
             for (let i = 0; i < 6; i++) {
+                let rowCounts = [0,0];
+                let colCounts = [0,0];
                 for (let j = 0; j < 6; j++) {
-                    if (gameBoard[i][j] === null) return false;
+                    if (gameBoard[i][j] === null) return false; // Boş hücre var
+                    rowCounts[gameBoard[i][j]]++;
+                    colCounts[gameBoard[j][i]]++;
                 }
+                if(rowCounts[0] !== 3 || rowCounts[1] !== 3) return false; // Satırda sayı dengesiz
             }
             checkAllRules();
             return errorCells.size === 0;
@@ -1035,7 +1050,7 @@
             document.getElementById('statErrors').textContent = errorCount;
             document.getElementById('statHints').textContent = hintCount;
             
-            const percentile = Math.max(10, 99 - errorCount * 5 - hintCount * 3 - Math.floor(elapsed / 30));
+            const percentile = Math.max(10, 99 - errorCount * 5 - hintCount * 10 - Math.floor(elapsed / 30));
             document.getElementById('percentileCircle').style.strokeDasharray = `${percentile}, 100`;
             document.getElementById('percentileText').textContent = `%${percentile}`;
             document.getElementById('percentileDescription').textContent = `Tüm oyuncuların %${percentile}'inden daha iyisiniz.`;
@@ -1097,11 +1112,13 @@
             hintCount++;
             const { i, j } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
             gameBoard[i][j] = solution[i][j];
-            fixedCells[i][j] = true; // Mark hint as fixed
+            fixedCells[i][j] = true; 
             
-            const cellEl = document.querySelector(`[data-row='${i}'][data-col='${j}']`);
-            cellEl.classList.add('success');
-            setTimeout(() => cellEl.classList.remove('success'), 1000);
+            const cellEl = document.querySelector(`.cell[data-row='${i}'][data-col='${j}']`);
+            if (cellEl) {
+                 cellEl.classList.add('success');
+                 setTimeout(() => cellEl.classList.remove('success'), 1000);
+            }
             
             checkAllRules();
             renderBoard();
