@@ -108,6 +108,122 @@
             font-size: 0.9em;
         }
 
+        /* Advertising Banner Styles */
+        .ad-banner {
+            width: 100%;
+            max-width: 380px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.06) 100%);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .ad-banner.visible {
+            display: flex;
+            animation: fadeInSlide 0.4s ease;
+        }
+
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ad-banner.clickable {
+            transition: all 0.3s ease;
+        }
+
+        .ad-banner.clickable:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .ad-banner.clickable:active {
+            transform: translateY(0);
+        }
+
+        @media (hover: hover) {
+            .ad-banner.clickable:hover .ad-arrow {
+                transform: translateX(3px);
+            }
+        }
+
+        .ad-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .ad-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .ad-logo img[src]:not([src=""]) {
+            display: block;
+        }
+
+        .ad-logo::before {
+            content: 'AD';
+            font-size: 0.8em;
+            font-weight: 700;
+            color: white;
+            display: block;
+        }
+
+        .ad-logo.has-image {
+            background: transparent;
+        }
+
+        .ad-logo.has-image::before {
+            display: none;
+        }
+
+        .ad-text {
+            flex: 1;
+            font-size: 1em;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            letter-spacing: -0.2px;
+            min-width: 0;
+        }
+
+        .ad-arrow {
+            font-size: 2em;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 200;
+            flex-shrink: 0;
+            transform: translateX(0);
+            transition: transform 0.2s ease;
+        }
+
         .game-content {
             flex: 1;
             display: flex;
@@ -124,6 +240,10 @@
             position: relative;
             margin: 0 auto 30px;
             touch-action: manipulation;
+        }
+
+        .ad-banner:not(.visible) + .game-board {
+            margin-top: 0;
         }
 
         .grid {
@@ -454,18 +574,9 @@
         .modal-title {
             font-size: 1.6em;
             margin-bottom: 20px;
-            margin-top: 10px;
             text-align: center;
             color: white;
             position: relative;
-        }
-
-        .victory-modal h2.modal-title {
-            margin-top: 0;
-        }
-
-        .reward-section + .modal-title {
-            margin-top: 0;
         }
 
         .theme-options {
@@ -754,188 +865,132 @@
 
         /* Reward Section Styles */
         .reward-section {
-            margin: 0 0 25px 0;
+            margin: 15px 0 20px;
             padding: 25px;
-            background: linear-gradient(135deg, rgba(255, 204, 0, 0.15) 0%, rgba(255, 149, 0, 0.1) 100%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%);
             border-radius: 15px;
-            border: 1px solid rgba(255, 204, 0, 0.3);
+            border: 1px solid rgba(255, 204, 0, 0.2);
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(255, 204, 0, 0.15);
-            animation: rewardSlideIn 0.6s ease;
+            animation: rewardSlideIn 0.5s ease;
+            box-shadow: 0 2px 10px rgba(255, 204, 0, 0.1);
         }
 
         @keyframes rewardSlideIn {
             0% {
                 opacity: 0;
-                transform: translateY(-20px) scale(0.9);
-            }
-            50% {
-                transform: translateY(5px) scale(1.02);
+                transform: translateY(-10px);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateY(0);
             }
         }
 
-        .reward-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent 30%, rgba(255, 204, 0, 0.1) 50%, transparent 70%);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-
         .reward-content {
-            position: relative;
-            z-index: 1;
             text-align: center;
         }
 
-        .reward-icon {
-            font-size: 3em;
-            margin-bottom: 10px;
-            animation: bounce 0.6s ease infinite alternate;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-        }
-
-        @keyframes bounce {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-10px); }
-        }
-
-        .reward-title {
-            font-size: 1.4em;
+        .reward-headline {
+            font-size: 1.3em;
             font-weight: 700;
             color: white;
             margin-bottom: 20px;
+            line-height: 1.4;
         }
 
         .reward-code-container {
-            margin: 20px 0;
+            margin: 20px 0 25px;
         }
 
         .reward-code-box {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px 20px;
-            border-radius: 10px;
-            border: 2px solid rgba(255, 204, 0, 0.5);
+            gap: 15px;
+            background: rgba(255, 204, 0, 0.1);
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 204, 0, 0.3);
         }
 
         .reward-code {
-            font-size: 1.5em;
+            font-size: 1.6em;
             font-weight: 800;
             color: #ffcc00;
             letter-spacing: 2px;
             font-family: monospace;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .copy-btn {
-            background: rgba(255, 204, 0, 0.2);
-            border: 1px solid rgba(255, 204, 0, 0.4);
-            border-radius: 6px;
-            padding: 6px 12px;
+        .copy-code-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 16px;
             cursor: pointer;
             transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
             color: white;
             font-size: 0.9em;
             font-weight: 600;
+            white-space: nowrap;
+            touch-action: manipulation;
         }
 
-        .copy-btn:hover {
-            background: rgba(255, 204, 0, 0.3);
-            transform: translateY(-1px);
+        .copy-code-btn:active {
+            transform: scale(0.95);
         }
 
-        .copy-btn:active {
-            transform: translateY(0);
+        @media (hover: hover) {
+            .copy-code-btn:hover {
+                background: rgba(255, 255, 255, 0.15);
+                transform: translateY(-1px);
+            }
         }
 
-        .copy-btn.copied {
+        .copy-code-btn.copied {
             background: rgba(52, 199, 89, 0.2);
             border-color: rgba(52, 199, 89, 0.4);
-        }
-
-        .copy-btn.copied .copy-text {
             color: #34c759;
         }
 
-        .copy-icon {
-            font-size: 1.1em;
-        }
-
-        .reward-text {
-            font-size: 0.95em;
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.5;
-            margin-top: 20px;
-            max-width: 90%;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
         .reward-cta-btn {
-            background: linear-gradient(135deg, #ffcc00 0%, #ff9500 100%);
-            color: #000;
+            background: #ffcc00;
+            color: #d52b1e;
             border: none;
             border-radius: 25px;
-            padding: 15px 25px;
-            font-size: 0.95em;
+            padding: 14px 28px;
+            font-size: 1em;
             font-weight: 700;
             cursor: pointer;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 320px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            margin: 0 auto 15px;
+            display: block;
             box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+            animation: subtlePulse 2s ease-in-out infinite;
+            touch-action: manipulation;
         }
 
-        .reward-cta-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
-        }
-
-        .reward-cta-btn:active::before {
-            width: 300px;
-            height: 300px;
+        @keyframes subtlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
 
         .reward-cta-btn:active {
-            transform: translateY(0);
+            transform: scale(0.98);
+            animation: none;
         }
 
         @media (hover: hover) {
             .reward-cta-btn:hover {
-                transform: translateY(-2px);
+                transform: scale(1.05);
                 box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
+                animation: none;
             }
+        }
+
+        .reward-subtext {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+            margin-top: 15px;
         }
 
         .play-again-btn {
@@ -991,6 +1046,25 @@
 
             .timer-display {
                 font-size: 0.95em;
+            }
+
+            .ad-banner {
+                max-width: 350px;
+                padding: 10px 14px;
+                margin-bottom: 15px;
+            }
+
+            .ad-logo {
+                width: 36px;
+                height: 36px;
+            }
+
+            .ad-text {
+                font-size: 0.95em;
+            }
+
+            .ad-arrow {
+                font-size: 1.8em;
             }
 
             .game-content {
@@ -1060,28 +1134,44 @@
 
             .reward-section {
                 padding: 15px;
-                margin: 0 0 15px 0;
+                margin: 15px 0;
             }
 
-            .reward-icon {
-                font-size: 2.5em;
-            }
-
-            .reward-title {
-                font-size: 1.2em;
+            .reward-headline {
+                font-size: 1.15em;
             }
 
             .reward-code {
-                font-size: 1.3em;
+                font-size: 1.4em;
             }
 
             .reward-code-box {
-                padding: 10px 15px;
+                padding: 12px 15px;
+                gap: 10px;
+            }
+
+            .copy-code-btn {
+                font-size: 0.85em;
+                padding: 8px 14px;
             }
 
             .reward-cta-btn {
-                font-size: 0.9em;
-                padding: 12px 20px;
+                font-size: 0.95em;
+                padding: 12px 24px;
+            }
+
+            .reward-subtext {
+                font-size: 0.85em;
+            }
+        }
+
+        @media (max-width: 399px) {
+            .reward-code-box {
+                flex-direction: column;
+            }
+
+            .copy-code-btn {
+                width: 100%;
             }
         }
     </style>
@@ -1098,6 +1188,15 @@
         </div>
 
         <div class="game-content">
+            <!-- Advertising Banner Area -->
+            <div class="ad-banner" id="adBanner" onclick="handleAdClick()" role="banner" aria-label="Advertisement">
+                <div class="ad-logo">
+                    <img src="" alt="" id="adLogoImage">
+                </div>
+                <div class="ad-text" id="adText">Advertising Text Area</div>
+                <div class="ad-arrow" aria-hidden="true">›</div>
+            </div>
+
             <div class="game-board">
                 <div class="grid" id="gameGrid"></div>
             </div>
@@ -1184,11 +1283,11 @@
         <button class="close-modal-btn" onclick="toggleSettings()">×</button>
         <h2 class="modal-title">Tema Seçimi</h2>
         <div class="theme-options">
-            <button class="theme-btn" onclick="selectTheme('default')" id="theme-default">
+            <button class="theme-btn active" onclick="selectTheme('default')" id="theme-default">
                 <span>Klasik</span>
                 <span class="theme-symbols">🐰 🐢</span>
             </button>
-            <button class="theme-btn active" onclick="selectTheme('matchday')" id="theme-matchday">
+            <button class="theme-btn" onclick="selectTheme('matchday')" id="theme-matchday">
                 <span>Match Day</span>
                 <span class="theme-symbols">🍔 🍟</span>
             </button>
@@ -1213,28 +1312,31 @@
 
     <div class="modal victory-modal" id="victoryModal">
         <button class="close-modal-btn" onclick="closeVictory()">×</button>
+        <h2 class="modal-title">🎉 Tebrikler! 🎉</h2>
         
         <!-- Special Reward Section (Matchday Theme Only) -->
         <div class="reward-section" id="rewardSection" style="display: none;">
             <div class="reward-content">
-                <div class="reward-icon">🍟</div>
-                <h3 class="reward-title">Tebrikler, Kupon kodu senindir!</h3>
+                <h3 class="reward-headline">Tebrikler! Kupon kodu senindir 🎉</h3>
+                
                 <div class="reward-code-container">
                     <div class="reward-code-box">
                         <span class="reward-code" id="rewardCode">DUO100</span>
-                        <button class="copy-btn" onclick="copyRewardCode()">
-                            <span class="copy-icon">📋</span>
-                            <span class="copy-text">Kopyala</span>
+                        <button class="copy-code-btn" onclick="copyRewardCode()">
+                            Kodu Kopyala
                         </button>
                     </div>
                 </div>
+                
                 <button class="reward-cta-btn" onclick="openMcDonaldsApp()">
-                    <span style="position: relative; z-index: 1;">Hemen kullanmak için McDonald's uygulamasını indir</span>
+                    McDonald's uygulamasını indir
                 </button>
+                
+                <p class="reward-subtext">
+                    100₺ indirim seni bekliyor. Uygulamayı indir, maç keyfini katla!
+                </p>
             </div>
         </div>
-        
-        <h2 class="modal-title">🎉 Tebrikler! 🎉</h2>
         
         <div class="stats-grid">
             <div class="stat-item">
@@ -1272,22 +1374,26 @@
 
     <script>
         /* ========================================
-           BANNER CONFIGURATION
-           Configure your banner image below
+           CONFIGURATION
            ======================================== */
         
-        // Banner configuration - Add your image URL here
-        const STATS_BANNER_IMAGE_URL = ''; // Required: 'https://example.com/banner.jpg'
+        // Advertising Banner Configuration (Above game grid)
+        const AD_BANNER_LOGO_URL = ''; // Example: 'https://i.ibb.co/4ZQb5gX4/Ads-z-tasar-m-1.png' (40x40px recommended)
+        const AD_BANNER_TEXT = ''; // Example: 'Derbi keyfi burgersiz çıkmaz! 🍔'
+        const AD_BANNER_LINK_URL = ''; // Example: 'https://siparis.mcdonalds.com.tr/en?gclsrc=aw.ds&gad_source=1&gad_campaignid=21662535320&gbraid=0AAAAAD5joUtSuR5CqlOMggRRnL3FEFoEo&gclid=CjwKCAjw1ozEBhAdEiwAn9qbza1AdYWevAJ4a9c0_4EL6gZePBIysrTyxrxWwjiFeHuMXzjyCw6CKxoCGbUQAvD_BwE'
+        
+        // Statistics Banner Configuration (In results screen)
+        const STATS_BANNER_IMAGE_URL = ''; // Required for banner to show: 'https://example.com/banner.jpg'
         // The banner will display with a 4:3 aspect ratio (e.g., 800x600, 1200x900)
         const STATS_BANNER_LINK_URL = ''; // Optional: Add a URL to make the banner clickable
         const STATS_BANNER_ALT_TEXT = 'Promotional Banner'; // Optional: Alt text for accessibility
 
-        // McDonald's App URL Configuration
-        const MCDONALDS_APP_URL = 'https://siparis.mcdonalds.com.tr/en?gclsrc=aw.ds&gad_source=1&gad_campaignid=21662535320&gbraid=0AAAAAD5joUtSuR5CqlOMggRRnL3FEFoEo&gclid=CjwKCAjw1ozEBhAdEiwAn9qbza1AdYWevAJ4a9c0_4EL6gZePBIysrTyxrxWwjiFeHuMXzjyCw6CKxoCGbUQAvD_BwE'; // Configure McDonald's app link
+        // McDonald's App URL for the reward CTA button (Matchday theme only)
+        const MCDONALDS_APP_URL = 'https://siparis.mcdonalds.com.tr/en?gclsrc=aw.ds&gad_source=1&gad_campaignid=21662535320&gbraid=0AAAAAD5joUtSuR5CqlOMggRRnL3FEFoEo&gclid=CjwKCAjw1ozEBhAdEiwAn9qbza1AdYWevAJ4a9c0_4EL6gZePBIysrTyxrxWwjiFeHuMXzjyCw6CKxoCGbUQAvD_BwE'; // Update with actual app URL
 
         /* ======================================== */
 
-        let currentTheme = 'matchday'; // Changed default theme to matchday
+        let currentTheme = 'default'; // Changed default theme
         let gameBoard = [];
         let solution = [];
         let fixedCells = [];
@@ -1346,27 +1452,20 @@
             }
         }
 
-        function openMcDonaldsApp() {
-            // Use the configured McDonald's app URL
-            window.open(MCDONALDS_APP_URL, '_blank');
-        }
-
         function copyRewardCode() {
             const codeText = document.getElementById('rewardCode').textContent;
-            const copyBtn = document.querySelector('.copy-btn');
+            const copyBtn = document.querySelector('.copy-code-btn');
             
             // Copy to clipboard
             navigator.clipboard.writeText(codeText).then(() => {
                 // Update button to show success
                 copyBtn.classList.add('copied');
-                copyBtn.querySelector('.copy-text').textContent = 'Kopyalandı!';
-                copyBtn.querySelector('.copy-icon').textContent = '✓';
+                copyBtn.textContent = 'Kopyalandı ✓';
                 
                 // Reset after 2 seconds
                 setTimeout(() => {
                     copyBtn.classList.remove('copied');
-                    copyBtn.querySelector('.copy-text').textContent = 'Kopyala';
-                    copyBtn.querySelector('.copy-icon').textContent = '📋';
+                    copyBtn.textContent = 'Kodu Kopyala';
                 }, 2000);
             }).catch(() => {
                 // Fallback for older browsers
@@ -1381,15 +1480,61 @@
                 
                 // Show success
                 copyBtn.classList.add('copied');
-                copyBtn.querySelector('.copy-text').textContent = 'Kopyalandı!';
-                copyBtn.querySelector('.copy-icon').textContent = '✓';
+                copyBtn.textContent = 'Kopyalandı ✓';
                 
                 setTimeout(() => {
                     copyBtn.classList.remove('copied');
-                    copyBtn.querySelector('.copy-text').textContent = 'Kopyala';
-                    copyBtn.querySelector('.copy-icon').textContent = '📋';
+                    copyBtn.textContent = 'Kodu Kopyala';
                 }, 2000);
             });
+        }
+
+        function openMcDonaldsApp() {
+            window.open(MCDONALDS_APP_URL, '_blank');
+        }
+
+        function handleAdClick() {
+            if (AD_BANNER_LINK_URL) {
+                window.open(AD_BANNER_LINK_URL, '_blank');
+            }
+        }
+
+        function initializeAdBanner() {
+            const adBanner = document.getElementById('adBanner');
+            const adText = document.getElementById('adText');
+            const adLogo = document.getElementById('adLogoImage');
+            const adLogoContainer = adLogo.parentElement;
+            
+            // Only show banner if there's text or logo
+            if (AD_BANNER_TEXT || AD_BANNER_LOGO_URL) {
+                adBanner.classList.add('visible');
+                
+                // Set text
+                if (AD_BANNER_TEXT) {
+                    adText.textContent = AD_BANNER_TEXT;
+                }
+                
+                // Set logo
+                if (AD_BANNER_LOGO_URL) {
+                    adLogo.src = AD_BANNER_LOGO_URL;
+                    adLogo.alt = 'Sponsor Logo';
+                    adLogoContainer.classList.add('has-image');
+                } else {
+                    adLogoContainer.classList.remove('has-image');
+                }
+                
+                // Add cursor style based on link availability
+                if (AD_BANNER_LINK_URL) {
+                    adBanner.classList.add('clickable');
+                    adBanner.style.cursor = 'pointer';
+                } else {
+                    adBanner.classList.remove('clickable');
+                    adBanner.style.cursor = 'default';
+                    adBanner.onclick = null;
+                }
+            } else {
+                adBanner.classList.remove('visible');
+            }
         }
 
         function handleBannerClick() {
@@ -1478,6 +1623,7 @@
         window.onload = function() {
             initializeDailyGame();
             checkStatsButtonVisibility();
+            initializeAdBanner();
         };
 
         function initializeDailyGame() {
@@ -1691,7 +1837,7 @@
             constraints = state.constraints;
             hintCount = state.hintCount;
             startTime = state.startTime || Date.now();
-            currentTheme = state.theme || 'matchday'; // Changed to matchday
+            currentTheme = state.theme || 'default'; // Changed to default
             moveHistory = state.moveHistory || [];
             gameCompleted = state.completed || false;
             
@@ -2207,8 +2353,6 @@
             const earnedReward = currentTheme === 'matchday' && elapsed < 60;
             if (earnedReward) {
                 rewardSection.style.display = 'block';
-                // Extra golden confetti for reward
-                setTimeout(() => createGoldenConfetti(), 500);
             } else {
                 rewardSection.style.display = 'none';
             }
@@ -2596,29 +2740,6 @@
                     setTimeout(() => cellEl.classList.remove('success'), 800);
                 }
             }, 100);
-        }
-
-        function createGoldenConfetti() {
-            const colors = ['#ffcc00', '#ffd700', '#ffed4e', '#fff59d', '#ffeb3b'];
-            
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti-piece';
-                    confetti.style.left = Math.random() * 100 + 'vw';
-                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
-                    confetti.style.width = '12px';
-                    confetti.style.height = '12px';
-                    confetti.style.borderRadius = '50%';
-                    document.body.appendChild(confetti);
-                    
-                    setTimeout(() => {
-                        confetti.remove();
-                    }, 4000);
-                }, i * 30);
-            }
         }
 
         function createConfetti() {
