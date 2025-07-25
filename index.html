@@ -604,8 +604,73 @@
             border-radius: 10px;
         }
 
+        .stats-banner {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.06) 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .stats-banner.visible {
+            display: flex;
+        }
+
+        .stats-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .stats-banner img[src]:not([src=""]) {
+            display: block;
+        }
+
+        .stats-banner::before {
+            content: 'Banner Area (4:3)';
+            position: absolute;
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 0.8em;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stats-banner.has-image {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: none;
+        }
+
+        .stats-banner.clickable {
+            cursor: pointer;
+        }
+
+        .stats-banner.clickable:active {
+            transform: scale(0.98);
+        }
+
+        @media (hover: hover) {
+            .stats-banner.clickable:hover {
+                transform: scale(1.02);
+                box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        .stats-banner.has-image::before {
+            display: none;
+        }
+
         .theme-leaderboard {
-            margin-top: 30px;
+            margin-top: 10px;
             padding: 20px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 15px;
@@ -676,6 +741,150 @@
             font-weight: 700;
             color: white;
             font-size: 1.1em;
+        }
+
+        /* Reward Section Styles */
+        .reward-section {
+            margin: 25px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.15) 0%, rgba(255, 149, 0, 0.1) 100%);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(255, 204, 0, 0.15);
+            animation: rewardSlideIn 0.6s ease;
+        }
+
+        @keyframes rewardSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.9);
+            }
+            50% {
+                transform: translateY(5px) scale(1.02);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .reward-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 204, 0, 0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .reward-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .reward-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+            animation: bounce 0.6s ease infinite alternate;
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+
+        .reward-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .reward-code-container {
+            margin: 20px 0;
+        }
+
+        .reward-label {
+            display: block;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+        }
+
+        .reward-code-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 204, 0, 0.5);
+        }
+
+        .reward-code {
+            font-size: 1.5em;
+            font-weight: 800;
+            color: #ffcc00;
+            letter-spacing: 2px;
+            font-family: monospace;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .copy-btn {
+            background: rgba(255, 204, 0, 0.2);
+            border: 1px solid rgba(255, 204, 0, 0.4);
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: white;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 204, 0, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        .copy-btn.copied {
+            background: rgba(52, 199, 89, 0.2);
+            border-color: rgba(52, 199, 89, 0.4);
+        }
+
+        .copy-btn.copied .copy-text {
+            color: #34c759;
+        }
+
+        .copy-icon {
+            font-size: 1.1em;
+        }
+
+        .reward-text {
+            font-size: 0.95em;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+            margin-top: 20px;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .play-again-btn {
@@ -775,9 +984,14 @@
                 font-size: 1.8em;
             }
 
+            .stats-banner {
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+
             .theme-leaderboard {
                 padding: 15px;
-                margin-top: 20px;
+                margin-top: 15px;
             }
 
             .theme-rank {
@@ -791,6 +1005,31 @@
 
             .theme-time {
                 font-size: 1em;
+            }
+
+            .reward-section {
+                padding: 15px;
+                margin: 15px 0;
+            }
+
+            .reward-icon {
+                font-size: 2.5em;
+            }
+
+            .reward-title {
+                font-size: 1.2em;
+            }
+
+            .reward-code {
+                font-size: 1.3em;
+            }
+
+            .reward-code-box {
+                padding: 10px 15px;
+            }
+
+            .reward-text {
+                font-size: 0.9em;
             }
         }
     </style>
@@ -943,6 +1182,30 @@
             </div>
         </div>
 
+        <!-- Special Reward Section (Matchday Theme Only) -->
+        <div class="reward-section" id="rewardSection" style="display: none;">
+            <div class="reward-content">
+                <div class="reward-icon">🎉</div>
+                <h3 class="reward-title">Özel Ödül Kazandın!</h3>
+                <div class="reward-code-container">
+                    <span class="reward-label">İndirim Kodun:</span>
+                    <div class="reward-code-box">
+                        <span class="reward-code" id="rewardCode">DUO100</span>
+                        <button class="copy-btn" onclick="copyRewardCode()">
+                            <span class="copy-icon">📋</span>
+                            <span class="copy-text">Kopyala</span>
+                        </button>
+                    </div>
+                </div>
+                <p class="reward-text">Tebrikler! McDonald's'ta geçerli 100₺ indirim kazandın. Uygulamayı indir, maç keyfini katla!</p>
+            </div>
+        </div>
+
+        <!-- Banner Area 4:3 Ratio -->
+        <div class="stats-banner" id="statsBanner" onclick="handleBannerClick()">
+            <img src="" alt="" id="statsBannerImage">
+        </div>
+
         <div class="theme-leaderboard">
             <h3>Günün Tema Sıralaması</h3>
             <div id="themeRanking"></div>
@@ -954,6 +1217,19 @@
     <div class="overlay" id="overlay" onclick="closeOverlay()"></div>
 
     <script>
+        /* ========================================
+           BANNER CONFIGURATION
+           Configure your banner image below
+           ======================================== */
+        
+        // Banner configuration - Add your image URL here
+        const STATS_BANNER_IMAGE_URL = ''; // Required: 'https://example.com/banner.jpg'
+        // The banner will display with a 4:3 aspect ratio (e.g., 800x600, 1200x900)
+        const STATS_BANNER_LINK_URL = ''; // Optional: Add a URL to make the banner clickable
+        const STATS_BANNER_ALT_TEXT = 'Promotional Banner'; // Optional: Alt text for accessibility
+
+        /* ======================================== */
+
         let currentTheme = 'default'; // Changed default theme
         let gameBoard = [];
         let solution = [];
@@ -1010,6 +1286,53 @@
                     [arr[i], arr[j]] = [arr[j], arr[i]];
                 }
                 return arr;
+            }
+        }
+
+        function copyRewardCode() {
+            const codeText = document.getElementById('rewardCode').textContent;
+            const copyBtn = document.querySelector('.copy-btn');
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(codeText).then(() => {
+                // Update button to show success
+                copyBtn.classList.add('copied');
+                copyBtn.querySelector('.copy-text').textContent = 'Kopyalandı!';
+                copyBtn.querySelector('.copy-icon').textContent = '✓';
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.querySelector('.copy-text').textContent = 'Kopyala';
+                    copyBtn.querySelector('.copy-icon').textContent = '📋';
+                }, 2000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = codeText;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                // Show success
+                copyBtn.classList.add('copied');
+                copyBtn.querySelector('.copy-text').textContent = 'Kopyalandı!';
+                copyBtn.querySelector('.copy-icon').textContent = '✓';
+                
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.querySelector('.copy-text').textContent = 'Kopyala';
+                    copyBtn.querySelector('.copy-icon').textContent = '📋';
+                }, 2000);
+            });
+        }
+
+        function handleBannerClick() {
+            if (STATS_BANNER_LINK_URL) {
+                window.open(STATS_BANNER_LINK_URL, '_blank');
             }
         }
 
@@ -1817,6 +2140,37 @@
             }
             document.getElementById('statHints').textContent = hintCount;
             
+            // Check for special reward (Matchday theme + under 60 seconds)
+            const rewardSection = document.getElementById('rewardSection');
+            const earnedReward = currentTheme === 'matchday' && elapsed < 60;
+            if (earnedReward) {
+                rewardSection.style.display = 'block';
+                // Extra golden confetti for reward
+                setTimeout(() => createGoldenConfetti(), 500);
+            } else {
+                rewardSection.style.display = 'none';
+            }
+            
+            // Set banner image if URL is provided
+            const bannerContainer = document.querySelector('.stats-banner');
+            const bannerImage = document.getElementById('statsBannerImage');
+            if (STATS_BANNER_IMAGE_URL) {
+                bannerImage.src = STATS_BANNER_IMAGE_URL;
+                bannerImage.alt = STATS_BANNER_ALT_TEXT;
+                bannerContainer.classList.add('has-image');
+                bannerContainer.classList.add('visible');
+            } else {
+                bannerContainer.classList.remove('has-image');
+                bannerContainer.classList.remove('visible');
+            }
+            
+            // Add clickable class if link is provided
+            if (STATS_BANNER_LINK_URL) {
+                bannerContainer.classList.add('clickable');
+            } else {
+                bannerContainer.classList.remove('clickable');
+            }
+            
             // Save stats for later viewing
             const today = new Date();
             const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
@@ -1824,7 +2178,9 @@
             savedStats[dateStr] = {
                 time: timeStr,
                 percentile: percentile,
-                hints: hintCount
+                hints: hintCount,
+                earnedReward: earnedReward,
+                theme: currentTheme
             };
             localStorage.setItem('duoSavedStats', JSON.stringify(savedStats));
             
@@ -1886,6 +2242,34 @@
                             document.querySelector('#statPercentile + .stat-label').textContent = '🏆 Bugünkü oyunculardan daha yavaşsınız!';
                         }
                         document.getElementById('statHints').textContent = savedStats[dateStr].hints;
+                        
+                        // Show reward section if it was earned
+                        const rewardSection = document.getElementById('rewardSection');
+                        if (savedStats[dateStr].earnedReward) {
+                            rewardSection.style.display = 'block';
+                        } else {
+                            rewardSection.style.display = 'none';
+                        }
+                        
+                        // Set banner image if URL is provided
+                        const bannerContainer = document.querySelector('.stats-banner');
+                        const bannerImage = document.getElementById('statsBannerImage');
+                        if (STATS_BANNER_IMAGE_URL) {
+                            bannerImage.src = STATS_BANNER_IMAGE_URL;
+                            bannerImage.alt = STATS_BANNER_ALT_TEXT;
+                            bannerContainer.classList.add('has-image');
+                            bannerContainer.classList.add('visible');
+                        } else {
+                            bannerContainer.classList.remove('has-image');
+                            bannerContainer.classList.remove('visible');
+                        }
+                        
+                        // Add clickable class if link is provided
+                        if (STATS_BANNER_LINK_URL) {
+                            bannerContainer.classList.add('clickable');
+                        } else {
+                            bannerContainer.classList.remove('clickable');
+                        }
                         
                         // Render theme leaderboard
                         renderThemeLeaderboard();
