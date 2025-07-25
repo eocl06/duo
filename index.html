@@ -23,8 +23,9 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
-            font-weight: 600;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-weight: 500;
+            background: #1a1a1a;
+            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -33,22 +34,19 @@
             position: relative;
         }
 
-        body::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            top: -50%;
-            left: -50%;
-            background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
-            animation: float 20s ease-in-out infinite;
-            z-index: -1;
+        body.custom-bg {
+            background: none;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translate(-10%, -10%) rotate(0deg); }
-            50% { transform: translate(10%, 10%) rotate(180deg); }
+        body.custom-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: -2;
         }
 
         .game-container {
@@ -56,17 +54,15 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
+            background: #1a1a1a;
             position: relative;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
 
         .header {
-            background: rgba(255, 255, 255, 0.98);
+            background: #1a1a1a;
             padding: 15px 20px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -75,23 +71,89 @@
             z-index: 100;
         }
 
-        h1 {
-            font-size: 2em;
-            font-weight: 900;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .timer {
-            font-size: 1.2em;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .timer::before {
+            content: '⏱️';
+            font-size: 0.9em;
+        }
+
+        h1 {
+            font-size: 1.4em;
             font-weight: 700;
-            color: #495057;
-            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
-            padding: 8px 16px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            color: white;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-btn:active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(0.95);
+        }
+
+        .difficulty-section {
+            text-align: center;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .difficulty {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        .clear-btn {
+            padding: 8px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .clear-btn:active {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(0.95);
         }
 
         .game-content {
@@ -99,71 +161,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             padding: 20px;
-            max-width: 800px;
+            max-width: 500px;
             margin: 0 auto;
             width: 100%;
-        }
-
-        .controls {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            width: 100%;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 15px;
-            font-size: 0.95em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            touch-action: manipulation;
-        }
-
-        .settings-btn {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: #333;
-            font-size: 1.3em;
-            padding: 12px 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .settings-btn:active {
-            transform: scale(0.95);
-        }
-
-        .new-game-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            box-shadow: 0 4px 15px rgba(102,126,234,0.3);
-        }
-
-        .new-game-btn:active {
-            transform: scale(0.95);
-        }
-
-        .hint-btn {
-            background: linear-gradient(135deg, #fa709a, #fee140);
-            color: white;
-            box-shadow: 0 4px 15px rgba(250,112,154,0.3);
-        }
-
-        .hint-btn:active {
-            transform: scale(0.95);
         }
 
         .game-board {
             display: inline-block;
             position: relative;
-            margin: 20px auto;
+            margin: 0 auto 30px;
             touch-action: manipulation;
         }
 
@@ -171,28 +178,25 @@
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             grid-template-rows: repeat(6, 1fr);
-            gap: 2px;
-            background: linear-gradient(135deg, #e0e5ec, #f0f4f8);
-            padding: 3px;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            width: min(90vw, 400px);
+            gap: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1px;
+            border-radius: 12px;
+            width: min(85vw, 380px);
             aspect-ratio: 1 / 1;
         }
 
         .cell {
-            background: linear-gradient(145deg, #ffffff, #f8f9fa);
-            border: 2px solid #e1e4e8;
+            background: #2a2a2a;
+            border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(1.5em, 5vw, 2.2em);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: clamp(1.8em, 6vw, 2.5em);
+            transition: all 0.15s ease;
             position: relative;
             overflow: visible;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
             touch-action: manipulation;
         }
 
@@ -203,66 +207,43 @@
             left: 50%;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, rgba(102, 126, 234, 0.2) 0%, transparent 60%);
+            background: rgba(255, 255, 255, 0.1);
             transform: translate(-50%, -50%) scale(0);
             opacity: 0;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
             pointer-events: none;
-            border-radius: 50%;
+            border-radius: 4px;
             z-index: 1;
         }
 
-        @media (hover: hover) {
-            .cell:hover:not(.fixed) {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
-                border-color: rgba(102, 126, 234, 0.5);
-            }
-        }
-
-        .cell:active:not(.fixed) {
-            transform: scale(0.95);
-        }
-
         .cell:active:not(.fixed)::after {
-            transform: translate(-50%, -50%) scale(1.5);
+            transform: translate(-50%, -50%) scale(0.8);
             opacity: 1;
         }
 
         .cell.fixed {
-            background: linear-gradient(145deg, #e9ecef, #dee2e6);
+            background: #3a3a3a;
             cursor: not-allowed;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .cell.symbol-appear {
-            animation: symbolBounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            animation: symbolBounce 0.3s ease;
         }
 
         @keyframes symbolBounce {
-            0% {
-                transform: scale(0.8);
-            }
-            50% {
-                transform: scale(1.15);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(0.9); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         .cell.error {
-            background: linear-gradient(145deg, #ffe0e0, #ffcccc);
-            border-color: #ff6b6b;
-            animation: shake 0.5s ease;
-            box-shadow: 0 0 20px rgba(255,107,107,0.3);
+            background: rgba(255, 59, 48, 0.2);
+            animation: shake 0.4s ease;
         }
 
         .cell.wrong-hint {
-            background: linear-gradient(145deg, #fff3cd, #ffeaa7);
-            border-color: #ffc107;
+            background: rgba(255, 204, 0, 0.2);
             animation: pulse 1s ease infinite;
-            box-shadow: 0 0 15px rgba(255,193,7,0.4);
         }
 
         @keyframes pulse {
@@ -272,91 +253,163 @@
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px) rotate(-2deg); }
-            75% { transform: translateX(5px) rotate(2deg); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
         }
 
         .cell.success {
-            animation: successBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            background: linear-gradient(145deg, #d3f9d8, #b2f2bb);
-            box-shadow: 0 0 30px rgba(64,192,87,0.4);
+            animation: successBounce 0.5s ease;
+            background: rgba(52, 199, 89, 0.2);
         }
 
         @keyframes successBounce {
             0% { transform: scale(1); }
-            40% { transform: scale(1.3) rotate(5deg); }
-            60% { transform: scale(0.9) rotate(-3deg); }
-            80% { transform: scale(1.1) rotate(1deg); }
+            50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
 
         .constraint {
             position: absolute;
-            font-size: clamp(14px, 3vw, 20px);
-            font-weight: 900;
-            color: #495057;
+            font-size: clamp(12px, 3vw, 16px);
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.6);
             background: transparent;
             z-index: 10;
             padding: 0;
             border: none;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.7);
             pointer-events: none;
         }
 
         .constraint-h {
             top: 50%;
-            right: -10px;
+            right: -8px;
             transform: translateY(-50%);
         }
 
         .constraint-v {
-            bottom: -10px;
+            bottom: -8px;
             left: 50%;
             transform: translateX(-50%);
         }
 
-        .rules {
-            margin-top: 20px;
-            padding: 15px;
-            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
-            border-radius: 12px;
-            text-align: left;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
             width: 100%;
-            max-width: 400px;
+            max-width: 380px;
+            margin-bottom: 20px;
         }
 
-        .rules h3 {
-            margin-bottom: 10px;
-            color: #495057;
+        .control-btn {
+            padding: 16px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            touch-action: manipulation;
+        }
+
+        .control-btn:active {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(0.98);
+        }
+
+        .instructions {
+            width: 100%;
+            max-width: 380px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .instructions-header {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .instructions-title {
+            font-size: 1em;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .instructions-toggle {
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.6);
+            transition: transform 0.3s ease;
+        }
+
+        .instructions-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .instructions-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .instructions-content.open {
+            max-height: 400px;
+        }
+
+        .instructions-list {
+            padding: 0 20px 20px;
+            list-style: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .instructions-list li {
+            margin: 12px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .instructions-list li::before {
+            content: "•";
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        .example {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin: 0 4px;
+        }
+
+        .example-symbols {
             font-size: 1.1em;
         }
 
-        .rules ul {
-            list-style: none;
-            color: #6c757d;
+        .example-check {
+            color: #34c759;
             font-size: 0.9em;
         }
 
-        .rules li {
-            margin: 6px 0;
-            padding-left: 20px;
-            position: relative;
-        }
-
-        .rules li:before {
-            content: "▸";
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-weight: bold;
+        .example-cross {
+            color: #ff3b30;
+            font-size: 0.9em;
         }
 
         .daily-info {
             text-align: center;
-            color: #6c757d;
-            margin-top: 10px;
-            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 20px;
+            font-size: 0.85em;
         }
 
         /* Modal Styles */
@@ -366,17 +419,17 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
+            background: #2a2a2a;
             padding: 30px 25px;
             border-radius: 20px;
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
             z-index: 1000;
             width: 90%;
             max-width: 420px;
-            animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: modalSlideIn 0.4s ease;
             max-height: 85vh;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         @keyframes modalSlideIn {
@@ -398,9 +451,8 @@
             font-size: 1.6em;
             margin-bottom: 20px;
             text-align: center;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: white;
+            position: relative;
         }
 
         .theme-options {
@@ -410,17 +462,17 @@
 
         .theme-btn {
             padding: 15px;
-            border: 2px solid #e1e4e8;
+            border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            background: rgba(255, 255, 255, 0.05);
             font-size: 1em;
             font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            color: white;
             touch-action: manipulation;
         }
 
@@ -429,9 +481,8 @@
         }
 
         .theme-btn.active {
-            border-color: #667eea;
-            background: linear-gradient(145deg, #f0f4ff, #e6ecff);
-            box-shadow: 0 0 30px rgba(102,126,234,0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .theme-symbols {
@@ -446,7 +497,7 @@
             border: none;
             font-size: 1.5em;
             cursor: pointer;
-            color: #6c757d;
+            color: rgba(255, 255, 255, 0.6);
             transition: all 0.3s ease;
             width: 36px;
             height: 36px;
@@ -458,6 +509,7 @@
 
         .close-modal-btn:active {
             transform: scale(0.9);
+            color: white;
         }
 
         .overlay {
@@ -467,8 +519,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.8);
             z-index: 999;
         }
 
@@ -482,44 +533,142 @@
             to { opacity: 1; }
         }
 
+        .pageskin-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-size: 0.9em;
+            margin-top: 15px;
+            outline: none;
+            transition: border-color 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .pageskin-input:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .pageskin-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
         /* Victory Modal */
         .victory-modal {
             max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
             margin: 20px 0;
         }
 
         .stat-item {
-            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            background: rgba(255, 255, 255, 0.05);
             padding: 20px;
             border-radius: 15px;
             text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .stat-item.full-width {
+            grid-column: 1 / -1;
         }
 
         .stat-item.highlight {
-            background: linear-gradient(145deg, #fff3cd, #ffeaa7);
-            box-shadow: 0 5px 20px rgba(255,193,7,0.2);
+            background: rgba(255, 204, 0, 0.1);
         }
 
         .stat-value {
             font-size: 2em;
             font-weight: 800;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: white;
             margin-bottom: 5px;
         }
 
         .stat-label {
-            color: #6c757d;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.95em;
             font-weight: 600;
+        }
+
+        .theme-leaderboard {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+
+        .theme-leaderboard h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2em;
+        }
+
+        .theme-rank {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-rank.gold {
+            background: rgba(255, 204, 0, 0.1);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+        }
+
+        .theme-rank.silver {
+            background: rgba(174, 174, 178, 0.1);
+            border: 1px solid rgba(174, 174, 178, 0.3);
+        }
+
+        .theme-rank.bronze {
+            background: rgba(255, 149, 0, 0.1);
+            border: 1px solid rgba(255, 149, 0, 0.3);
+        }
+
+        .theme-rank.current-theme {
+            background: rgba(52, 199, 89, 0.1);
+            border: 1px solid rgba(52, 199, 89, 0.3);
+        }
+
+        .theme-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .theme-position {
+            font-size: 1.4em;
+            font-weight: 900;
+            color: white;
+            width: 30px;
+            text-align: center;
+        }
+
+        .theme-name {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .theme-emoji {
+            font-size: 1.3em;
+        }
+
+        .theme-time {
+            font-weight: 700;
+            color: white;
+            font-size: 1.1em;
         }
 
         .play-again-btn {
@@ -530,56 +679,102 @@
             font-size: 1.1em;
             font-weight: 700;
             cursor: pointer;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: rgba(255, 255, 255, 0.1);
             color: white;
             margin-top: 20px;
-            box-shadow: 0 8px 30px rgba(102,126,234,0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
         }
 
         .play-again-btn:active {
             transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        @keyframes confetti {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .confetti-piece {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ffcc00;
+            top: -10px;
+            animation: confetti 3s linear;
+            border-radius: 2px;
+            z-index: 998;
+            pointer-events: none;
         }
 
         @media (max-width: 768px) {
-            .game-container {
-                height: 100vh;
-                height: -webkit-fill-available;
-            }
-
             .header {
                 padding: 12px 15px;
             }
 
             h1 {
-                font-size: 1.6em;
+                font-size: 1.2em;
             }
 
             .timer {
-                font-size: 1.1em;
-                padding: 6px 12px;
+                font-size: 1em;
             }
 
             .game-content {
                 padding: 15px;
             }
 
-            .controls {
-                margin-bottom: 15px;
-            }
-
-            .btn {
-                padding: 10px 18px;
-                font-size: 0.9em;
-            }
-
             .grid {
-                width: min(85vw, 350px);
+                width: min(90vw, 350px);
             }
 
-            .rules {
-                font-size: 0.85em;
-                padding: 12px;
+            .controls {
+                max-width: 350px;
+            }
+
+            .instructions {
+                max-width: 350px;
+            }
+
+            .victory-modal {
+                max-height: 95vh;
+                padding: 25px 20px;
+            }
+
+            .stats-grid {
+                gap: 12px;
+            }
+
+            .stat-item {
+                padding: 15px;
+            }
+
+            .stat-value {
+                font-size: 1.8em;
+            }
+
+            .theme-leaderboard {
+                padding: 15px;
+                margin-top: 20px;
+            }
+
+            .theme-rank {
+                padding: 10px 12px;
+                margin: 6px 0;
+            }
+
+            .theme-position {
+                font-size: 1.2em;
+            }
+
+            .theme-time {
+                font-size: 1em;
             }
         }
     </style>
@@ -587,30 +782,46 @@
 <body>
     <div class="game-container">
         <div class="header">
-            <h1>DUO</h1>
-            <div class="timer" id="timer">00:00</div>
+            <div class="header-left">
+                <div class="timer" id="timer">0:47</div>
+            </div>
+            <h1>🍔 Tango</h1>
+            <div class="header-right">
+                <button class="header-btn" onclick="showStats()" id="statsBtn" style="display: none;">📊</button>
+                <button class="header-btn" onclick="toggleSettings()">⚙️</button>
+            </div>
+        </div>
+
+        <div class="difficulty-section">
+            <div class="difficulty">Difficulty <strong>HARD</strong></div>
+            <button class="clear-btn" onclick="clearBoard()">Clear</button>
         </div>
 
         <div class="game-content">
-            <div class="controls">
-                <button class="btn settings-btn" onclick="toggleSettings()">⚙️</button>
-                <button class="btn hint-btn" onclick="getHint()">💡 İpucu</button>
-                <button class="btn new-game-btn" onclick="newGame()">Yeni Oyun</button>
-            </div>
-
             <div class="game-board">
                 <div class="grid" id="gameGrid"></div>
             </div>
 
-            <div class="rules">
-                <h3>Nasıl Oynanır:</h3>
-                <ul>
-                    <li>Yan yana (yatay/dikey) aynı sembolden en fazla 2 tane olabilir</li>
-                    <li>Her satır ve sütunda 3'er tane sembol olmalı</li>
-                    <li>`=` işareti olan hücreler aynı sembolü içermeli</li>
-                    <li>`×` işareti olan hücreler farklı sembolleri içermeli</li>
-                    <li>Her bulmaca tek bir çözüme sahiptir</li>
-                </ul>
+            <div class="controls">
+                <button class="control-btn" onclick="undoMove()">Undo</button>
+                <button class="control-btn" onclick="getHint()">Hint</button>
+            </div>
+
+            <div class="instructions">
+                <div class="instructions-header" onclick="toggleInstructions()">
+                    <div class="instructions-title">How to play</div>
+                    <div class="instructions-toggle" id="instructionsToggle">^</div>
+                </div>
+                <div class="instructions-content" id="instructionsContent">
+                    <ul class="instructions-list">
+                        <li>Fill the grid so that each cell contains either a <span class="example-symbols">🍔</span> or a <span class="example-symbols">🍟</span>.</li>
+                        <li>No more than 2 <span class="example-symbols">🍔</span> or <span class="example-symbols">🍟</span> may be next to each other, either vertically or horizontally.</li>
+                        <li><span class="example"><span class="example-symbols">🍔🍔</span> <span class="example-check">✓</span></span></li>
+                        <li><span class="example"><span class="example-symbols">🍔🍔🍔</span> <span class="example-cross">✗</span></span></li>
+                        <li>Each row (and column) must contain the same number of <span class="example-symbols">🍔</span> and <span class="example-symbols">🍟</span>.</li>
+                        <li>Cells separated by an <strong>=</strong> sign must be of the same type. Cells separated by an <strong>×</strong> sign must be different.</li>
+                    </ul>
+                </div>
             </div>
 
             <div class="daily-info" id="dailyInfo"></div>
@@ -621,7 +832,11 @@
         <button class="close-modal-btn" onclick="toggleSettings()">×</button>
         <h2 class="modal-title">Tema Seçimi</h2>
         <div class="theme-options">
-            <button class="theme-btn active" onclick="selectTheme('default')" id="theme-default">
+            <button class="theme-btn active" onclick="selectTheme('matchday')" id="theme-matchday">
+                <span>Match Day</span>
+                <span class="theme-symbols">🍔 🍟</span>
+            </button>
+            <button class="theme-btn" onclick="selectTheme('default')" id="theme-default">
                 <span>Klasik</span>
                 <span class="theme-symbols">🐰 🐢</span>
             </button>
@@ -642,6 +857,7 @@
                 <span class="theme-symbols">🍦 🍨</span>
             </button>
         </div>
+        <input type="text" class="pageskin-input" placeholder="Arkaplan resmi URL'si girin..." onchange="setPageskin(this.value)">
     </div>
 
     <div class="modal victory-modal" id="victoryModal">
@@ -651,25 +867,34 @@
         <div class="stats-grid">
             <div class="stat-item">
                 <div class="stat-value" id="statTime">00:00</div>
-                <div class="stat-label">Süre</div>
+                <div class="stat-label">Süreniz</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value" id="statHints">0</div>
-                <div class="stat-label">İpucu Kullanımı</div>
+                <div class="stat-value" id="statAvgTime">00:00</div>
+                <div class="stat-label">Ortalama Süre</div>
             </div>
-            <div class="stat-item highlight">
+            <div class="stat-item full-width highlight">
                 <div class="stat-value" id="statPercentile">-</div>
-                <div class="stat-label">Bugünkü Oyuncuların</div>
+                <div class="stat-label">🏆 Bugünkü oyunculardan daha iyi!</div>
+            </div>
+            <div class="stat-item full-width" style="font-size: 0.9em;">
+                <span style="color: rgba(255, 255, 255, 0.7);">İpucu Kullanımı: </span>
+                <span id="statHints" style="font-weight: 700; color: white;">0</span>
             </div>
         </div>
 
-        <button class="play-again-btn" onclick="newGame(); closeVictory();">Yarının Oyununu Bekle</button>
+        <div class="theme-leaderboard">
+            <h3>Günün Tema Sıralaması</h3>
+            <div id="themeRanking"></div>
+        </div>
+
+        <button class="play-again-btn" onclick="closeVictory();">Yarının Oyununu Bekle</button>
     </div>
 
     <div class="overlay" id="overlay" onclick="closeOverlay()"></div>
 
     <script>
-        let currentTheme = 'default';
+        let currentTheme = 'matchday';
         let gameBoard = [];
         let solution = [];
         let fixedCells = [];
@@ -680,8 +905,10 @@
         let errorCells = new Set();
         let wrongHintCells = new Set();
         let dailyGameSeed = null;
+        let moveHistory = [];
 
         const themes = {
+            matchday: { name: 'Match Day', symbols: ['🍔', '🍟'] },
             default: { name: 'Klasik', symbols: ['🐰', '🐢'] },
             galatasaray: { name: 'Galatasaray', symbols: ['🦁', '⭐'] },
             fenerbahce: { name: 'Fenerbahçe', symbols: ['🐤', '⚓'] },
@@ -718,15 +945,64 @@
             shuffle(array) {
                 const arr = [...array];
                 for (let i = arr.length - 1; i > 0; i--) {
-                    const j = this.nextInt(0, i);
+                    const j = Math.floor(this.next() * (i + 1));
                     [arr[i], arr[j]] = [arr[j], arr[i]];
                 }
                 return arr;
             }
         }
 
+        function setPageskin(url) {
+            if (!url) return;
+            document.body.style.background = 'none';
+            document.body.style.backgroundImage = `url(${url})`;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundAttachment = 'fixed';
+            document.body.classList.add('custom-bg');
+        }
+
+        function toggleInstructions() {
+            const content = document.getElementById('instructionsContent');
+            const toggle = document.getElementById('instructionsToggle');
+            
+            content.classList.toggle('open');
+            toggle.classList.toggle('open');
+        }
+
+        function clearBoard() {
+            // Clear all non-fixed cells
+            for (let i = 0; i < 6; i++) {
+                for (let j = 0; j < 6; j++) {
+                    if (!fixedCells[i][j]) {
+                        gameBoard[i][j] = null;
+                    }
+                }
+            }
+            
+            errorCells.clear();
+            wrongHintCells.clear();
+            moveHistory = [];
+            renderBoard();
+            saveGameState();
+        }
+
+        function undoMove() {
+            if (moveHistory.length === 0) return;
+            
+            const lastMove = moveHistory.pop();
+            gameBoard[lastMove.row][lastMove.col] = lastMove.previousValue;
+            
+            errorCells.clear();
+            wrongHintCells.clear();
+            checkAllRules();
+            renderBoard();
+            saveGameState();
+        }
+
         window.onload = function() {
             initializeDailyGame();
+            checkStatsButtonVisibility();
         };
 
         function initializeDailyGame() {
@@ -741,6 +1017,7 @@
                 if (state.date === dateStr && state.completed) {
                     // Show completed state
                     document.getElementById('dailyInfo').textContent = "Bugünün oyununu tamamladınız! Yarın yeni bir oyun sizi bekliyor.";
+                    document.getElementById('statsBtn').style.display = 'inline-block';
                     loadGameState(state);
                     return;
                 } else if (state.date === dateStr && !state.completed) {
@@ -785,7 +1062,8 @@
                 hintCount: hintCount,
                 startTime: startTime,
                 completed: false,
-                theme: currentTheme
+                theme: currentTheme,
+                moveHistory: moveHistory
             };
             
             localStorage.setItem('duoGameState', JSON.stringify(state));
@@ -808,8 +1086,6 @@
                 score: calculateScore(timeInSeconds, hints)
             });
             
-            localStorage.setItem('duoDailyScores', JSON.stringify(dailyScores));
-            
             // Clean up old data (keep only last 30 days)
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -823,6 +1099,17 @@
             });
             
             localStorage.setItem('duoDailyScores', JSON.stringify(dailyScores));
+            
+            // Also clean up old saved stats
+            let savedStats = JSON.parse(localStorage.getItem('duoSavedStats') || '{}');
+            Object.keys(savedStats).forEach(date => {
+                const dateParts = date.split('-');
+                const statsDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+                if (statsDate < thirtyDaysAgo) {
+                    delete savedStats[date];
+                }
+            });
+            localStorage.setItem('duoSavedStats', JSON.stringify(savedStats));
         }
 
         function calculateScore(timeInSeconds, hints) {
@@ -884,6 +1171,96 @@
             return scores;
         }
 
+        function getAverageTime() {
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            
+            const dailyScores = JSON.parse(localStorage.getItem('duoDailyScores') || '{}');
+            let todayScores = dailyScores[dateStr] || [];
+            
+            // If this is the first completion, add simulated scores
+            if (todayScores.length <= 1) {
+                const simulatedScores = generateSimulatedScores();
+                todayScores = todayScores.concat(simulatedScores);
+            }
+            
+            // Calculate average time
+            const totalTime = todayScores.reduce((sum, score) => sum + score.time, 0);
+            const avgTime = Math.round(totalTime / todayScores.length);
+            
+            return avgTime;
+        }
+
+        function getThemeLeaderboard(currentTheme) {
+            // Mock data for theme performance
+            const themes = [
+                { key: 'matchday', name: 'Match Day', emoji: '🍔', avgTime: 115 },
+                { key: 'default', name: 'Klasik', emoji: '🐰', avgTime: 125 },
+                { key: 'galatasaray', name: 'Galatasaray', emoji: '🦁', avgTime: 142 },
+                { key: 'fenerbahce', name: 'Fenerbahçe', emoji: '🐤', avgTime: 118 },
+                { key: 'besiktas', name: 'Beşiktaş', emoji: '🦅', avgTime: 156 },
+                { key: 'summerheat', name: 'Yaz Sıcağı', emoji: '🍦', avgTime: 134 }
+            ];
+            
+            // Use daily seed for consistent daily rankings
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            const seed = hashCode(dateStr + 'theme-leaderboard');
+            const rng = new SeededRandom(seed);
+            
+            // Add some randomness to make it more realistic (±30 seconds)
+            themes.forEach(theme => {
+                const variation = rng.nextInt(-30, 30);
+                theme.avgTime += variation;
+                theme.avgTime = Math.max(60, Math.min(300, theme.avgTime)); // Between 1-5 minutes
+            });
+            
+            // Sort by average time (fastest first)
+            themes.sort((a, b) => a.avgTime - b.avgTime);
+            
+            return themes;
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function renderThemeLeaderboard() {
+            const leaderboard = getThemeLeaderboard(currentTheme);
+            const container = document.getElementById('themeRanking');
+            container.innerHTML = '';
+            
+            leaderboard.forEach((theme, index) => {
+                const rank = document.createElement('div');
+                rank.className = 'theme-rank';
+                
+                // Add special styling for top 3
+                if (index === 0) rank.classList.add('gold');
+                else if (index === 1) rank.classList.add('silver');
+                else if (index === 2) rank.classList.add('bronze');
+                
+                // Highlight current theme
+                const isCurrentTheme = theme.key === currentTheme;
+                if (isCurrentTheme) rank.classList.add('current-theme');
+                
+                // Add crown for first place
+                const positionDisplay = index === 0 ? '👑' : `${index + 1}`;
+                
+                rank.innerHTML = `
+                    <div class="theme-info">
+                        <div class="theme-position">${positionDisplay}</div>
+                        <div class="theme-emoji">${theme.emoji}</div>
+                        <div class="theme-name">${theme.name}${isCurrentTheme ? ' ⭐' : ''}</div>
+                    </div>
+                    <div class="theme-time">${formatTime(theme.avgTime)}</div>
+                `;
+                
+                container.appendChild(rank);
+            });
+        }
+
         function loadGameState(state) {
             gameBoard = state.gameBoard;
             solution = state.solution;
@@ -891,7 +1268,8 @@
             constraints = state.constraints;
             hintCount = state.hintCount;
             startTime = state.startTime || Date.now();
-            currentTheme = state.theme || 'default';
+            currentTheme = state.theme || 'matchday';
+            moveHistory = state.moveHistory || [];
             
             // Update theme button
             document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
@@ -904,6 +1282,9 @@
                 clearInterval(timerInterval);
                 timerInterval = setInterval(updateTimer, 1000);
                 updateTimer();
+            } else {
+                // Show stats button if game is completed
+                document.getElementById('statsBtn').style.display = 'inline-block';
             }
         }
 
@@ -1053,6 +1434,7 @@
                 constraints = [];
                 errorCells.clear();
                 wrongHintCells.clear();
+                moveHistory = [];
                 solution = generateValidSolution(rng);
                 
                 // Generate constraints - maximum 10 constraints
@@ -1261,11 +1643,31 @@
             // Clear wrong hint highlighting when user interacts
             wrongHintCells.clear();
             
+            const prevValue = gameBoard[row][col];
+            
+            // Save move to history
+            moveHistory.push({
+                row: row,
+                col: col,
+                previousValue: prevValue
+            });
+            
             gameBoard[row][col] = gameBoard[row][col] === null ? 0 : (gameBoard[row][col] === 0 ? 1 : null);
             
             checkAllRules();
             renderBoard();
             saveGameState();
+            
+            // Add bounce animation when symbol appears
+            if (prevValue === null && gameBoard[row][col] !== null) {
+                setTimeout(() => {
+                    const cellEl = document.querySelector(`.cell[data-row='${row}'][data-col='${col}']`);
+                    if (cellEl) {
+                        cellEl.classList.add('symbol-appear');
+                        setTimeout(() => cellEl.classList.remove('symbol-appear'), 300);
+                    }
+                }, 50);
+            }
             
             if (checkVictory()) {
                 showVictory();
@@ -1352,26 +1754,99 @@
             // Save the score
             saveDailyScore(elapsed, hintCount);
             
-            // Calculate percentile
+            // Calculate statistics
             const myScore = calculateScore(elapsed, hintCount);
             const percentile = getPercentileRank(myScore);
+            const avgTime = getAverageTime();
             
+            // Update display
             document.getElementById('statTime').textContent = timeStr;
+            document.getElementById('statAvgTime').textContent = formatTime(avgTime);
+            document.getElementById('statPercentile').textContent = `%${percentile}`;
             document.getElementById('statHints').textContent = hintCount;
-            document.getElementById('statPercentile').textContent = `${percentile}%'inden daha iyi!`;
+            
+            // Save stats for later viewing
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            const savedStats = JSON.parse(localStorage.getItem('duoSavedStats') || '{}');
+            savedStats[dateStr] = {
+                time: timeStr,
+                avgTime: formatTime(avgTime),
+                percentile: `%${percentile}`,
+                hints: hintCount
+            };
+            localStorage.setItem('duoSavedStats', JSON.stringify(savedStats));
+            
+            // Render theme leaderboard
+            renderThemeLeaderboard();
             
             // Mark game as completed
             const savedData = JSON.parse(localStorage.getItem('duoGameState') || '{}');
             savedData.completed = true;
             localStorage.setItem('duoGameState', JSON.stringify(savedData));
             
+            // Show stats button
+            document.getElementById('statsBtn').style.display = 'inline-block';
+            
             document.getElementById('overlay').classList.add('show');
             document.getElementById('victoryModal').classList.add('show');
+            
+            // Add confetti effect
+            createConfetti();
+        }
+
+        function checkStatsButtonVisibility() {
+            const savedData = localStorage.getItem('duoGameState');
+            if (savedData) {
+                const state = JSON.parse(savedData);
+                const today = new Date();
+                const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+                
+                if (state.date === dateStr && state.completed) {
+                    document.getElementById('statsBtn').style.display = 'inline-block';
+                }
+            }
+        }
+
+        function showStats() {
+            // If stats modal is already open, close it
+            if (document.getElementById('victoryModal').classList.contains('show')) {
+                closeVictory();
+                return;
+            }
+            
+            const savedData = localStorage.getItem('duoGameState');
+            if (savedData) {
+                const state = JSON.parse(savedData);
+                const today = new Date();
+                const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+                
+                if (state.date === dateStr && state.completed) {
+                    // Reload stats from saved data
+                    const savedStats = JSON.parse(localStorage.getItem('duoSavedStats') || '{}');
+                    if (savedStats[dateStr]) {
+                        document.getElementById('statTime').textContent = savedStats[dateStr].time;
+                        document.getElementById('statAvgTime').textContent = savedStats[dateStr].avgTime;
+                        document.getElementById('statPercentile').textContent = savedStats[dateStr].percentile;
+                        document.getElementById('statHints').textContent = savedStats[dateStr].hints;
+                        
+                        // Render theme leaderboard
+                        renderThemeLeaderboard();
+                        
+                        // Show modal
+                        document.getElementById('overlay').classList.add('show');
+                        document.getElementById('victoryModal').classList.add('show');
+                    }
+                }
+            }
         }
 
         function closeVictory() {
             document.getElementById('overlay').classList.remove('show');
             document.getElementById('victoryModal').classList.remove('show');
+            
+            // Remove any leftover confetti
+            document.querySelectorAll('.confetti-piece').forEach(el => el.remove());
         }
 
         function newGame() {
@@ -1383,13 +1858,15 @@
             if (savedData) {
                 const state = JSON.parse(savedData);
                 if (state.date === dateStr && state.completed) {
-                    alert("Bugünün oyununu zaten tamamladınız! Yarın yeni bir oyun için geri gelin.");
-                    return;
+                    return; // Don't allow new game if today's is completed
                 }
             }
             
             hintCount = 0;
             closeVictory();
+            
+            // Hide stats button for new game
+            document.getElementById('statsBtn').style.display = 'none';
             
             generatePuzzle();
             renderBoard();
@@ -1406,7 +1883,7 @@
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
             const minutes = Math.floor(elapsed / 60);
             const seconds = elapsed % 60;
-            document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('timer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
 
         function getHint() {
@@ -1609,9 +2086,29 @@
                 const cellEl = document.querySelector(`.cell[data-row='${row}'][data-col='${col}']`);
                 if (cellEl) {
                     cellEl.classList.add('success');
-                    setTimeout(() => cellEl.classList.remove('success'), 1000);
+                    setTimeout(() => cellEl.classList.remove('success'), 800);
                 }
             }, 100);
+        }
+
+        function createConfetti() {
+            const colors = ['#ffcc00', '#ff6b35', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti-piece';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }, i * 50);
+            }
         }
     </script>
 </body>
