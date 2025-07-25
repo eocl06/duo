@@ -24,7 +24,7 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
             font-weight: 500;
-            background: #1a1a1a;
+            background: #2d2d2d;
             color: white;
             display: flex;
             justify-content: center;
@@ -34,34 +34,21 @@
             position: relative;
         }
 
-        body.custom-bg {
-            background: none;
-        }
 
-        body.custom-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: -2;
-        }
 
         .game-container {
             width: 100vw;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            background: #1a1a1a;
+            background: #2d2d2d;
             position: relative;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
 
         .header {
-            background: #1a1a1a;
+            background: #2d2d2d;
             padding: 15px 20px;
             display: flex;
             align-items: center;
@@ -125,38 +112,7 @@
             transform: scale(0.95);
         }
 
-        .difficulty-section {
-            text-align: center;
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .difficulty {
-            font-size: 0.9em;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 600;
-        }
-
-        .clear-btn {
-            padding: 8px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
-            background: transparent;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9em;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .clear-btn:active {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(0.95);
-        }
-
-        .game-content {
+.game-content {
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -187,7 +143,7 @@
         }
 
         .cell {
-            background: #2a2a2a;
+            background: #3a3a3a;
             border: none;
             cursor: pointer;
             display: flex;
@@ -222,7 +178,7 @@
         }
 
         .cell.fixed {
-            background: #3a3a3a;
+            background: #4a4a4a;
             cursor: not-allowed;
         }
 
@@ -419,7 +375,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: #2a2a2a;
+            background: #3a3a3a;
             padding: 30px 25px;
             border-radius: 20px;
             box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
@@ -493,23 +449,34 @@
             position: absolute;
             top: 15px;
             right: 15px;
-            background: none;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
             font-size: 1.5em;
             cursor: pointer;
-            color: rgba(255, 255, 255, 0.6);
-            transition: all 0.3s ease;
-            width: 36px;
-            height: 36px;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.2s ease;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: 300;
+            line-height: 1;
+            z-index: 1001;
         }
 
         .close-modal-btn:active {
             transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.2);
             color: white;
+        }
+
+        @media (hover: hover) {
+            .close-modal-btn:hover {
+                background: rgba(255, 255, 255, 0.15);
+                color: white;
+            }
         }
 
         .overlay {
@@ -533,26 +500,7 @@
             to { opacity: 1; }
         }
 
-        .pageskin-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            font-size: 0.9em;
-            margin-top: 15px;
-            outline: none;
-            transition: border-color 0.3s ease;
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-        }
 
-        .pageskin-input:focus {
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        .pageskin-input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
 
         /* Victory Modal */
         .victory-modal {
@@ -785,41 +733,36 @@
             <div class="header-left">
                 <div class="timer" id="timer">0:47</div>
             </div>
-            <h1>🍔 Tango</h1>
+            <h1>Duo</h1>
             <div class="header-right">
                 <button class="header-btn" onclick="showStats()" id="statsBtn" style="display: none;">📊</button>
                 <button class="header-btn" onclick="toggleSettings()">⚙️</button>
             </div>
         </div>
 
-        <div class="difficulty-section">
-            <div class="difficulty">Difficulty <strong>HARD</strong></div>
-            <button class="clear-btn" onclick="clearBoard()">Clear</button>
-        </div>
-
-        <div class="game-content">
+<div class="game-content">
             <div class="game-board">
                 <div class="grid" id="gameGrid"></div>
             </div>
 
             <div class="controls">
-                <button class="control-btn" onclick="undoMove()">Undo</button>
-                <button class="control-btn" onclick="getHint()">Hint</button>
+                <button class="control-btn" onclick="undoMove()">Geri Al</button>
+                <button class="control-btn" onclick="getHint()">İpucu</button>
             </div>
 
             <div class="instructions">
                 <div class="instructions-header" onclick="toggleInstructions()">
-                    <div class="instructions-title">How to play</div>
+                    <div class="instructions-title">Nasıl Oynanır</div>
                     <div class="instructions-toggle" id="instructionsToggle">^</div>
                 </div>
                 <div class="instructions-content" id="instructionsContent">
                     <ul class="instructions-list">
-                        <li>Fill the grid so that each cell contains either a <span class="example-symbols">🍔</span> or a <span class="example-symbols">🍟</span>.</li>
-                        <li>No more than 2 <span class="example-symbols">🍔</span> or <span class="example-symbols">🍟</span> may be next to each other, either vertically or horizontally.</li>
+                        <li>Izgara her hücre bir <span class="example-symbols">🍔</span> veya bir <span class="example-symbols">🍟</span> içerecek şekilde doldurun.</li>
+                        <li>2'den fazla <span class="example-symbols">🍔</span> veya <span class="example-symbols">🍟</span> yan yana (dikey veya yatay) olamaz.</li>
                         <li><span class="example"><span class="example-symbols">🍔🍔</span> <span class="example-check">✓</span></span></li>
                         <li><span class="example"><span class="example-symbols">🍔🍔🍔</span> <span class="example-cross">✗</span></span></li>
-                        <li>Each row (and column) must contain the same number of <span class="example-symbols">🍔</span> and <span class="example-symbols">🍟</span>.</li>
-                        <li>Cells separated by an <strong>=</strong> sign must be of the same type. Cells separated by an <strong>×</strong> sign must be different.</li>
+                        <li>Her satır (ve sütun) aynı sayıda <span class="example-symbols">🍔</span> ve <span class="example-symbols">🍟</span> içermeli.</li>
+                        <li><strong>=</strong> işaretiyle ayrılan hücreler aynı türde olmalı. <strong>×</strong> işaretiyle ayrılanlar farklı olmalı.</li>
                     </ul>
                 </div>
             </div>
@@ -857,7 +800,6 @@
                 <span class="theme-symbols">🍦 🍨</span>
             </button>
         </div>
-        <input type="text" class="pageskin-input" placeholder="Arkaplan resmi URL'si girin..." onchange="setPageskin(this.value)">
     </div>
 
     <div class="modal victory-modal" id="victoryModal">
@@ -952,15 +894,7 @@
             }
         }
 
-        function setPageskin(url) {
-            if (!url) return;
-            document.body.style.background = 'none';
-            document.body.style.backgroundImage = `url(${url})`;
-            document.body.style.backgroundSize = 'cover';
-            document.body.style.backgroundPosition = 'center';
-            document.body.style.backgroundAttachment = 'fixed';
-            document.body.classList.add('custom-bg');
-        }
+
 
         function toggleInstructions() {
             const content = document.getElementById('instructionsContent');
@@ -1305,10 +1239,14 @@
         }
 
         function closeOverlay() {
-            if (document.getElementById('settingsModal').classList.contains('show')) {
+            const settingsModal = document.getElementById('settingsModal');
+            const victoryModal = document.getElementById('victoryModal');
+            const overlay = document.getElementById('overlay');
+            
+            if (settingsModal.classList.contains('show')) {
                 toggleSettings();
             }
-            if (document.getElementById('victoryModal').classList.contains('show')) {
+            if (victoryModal.classList.contains('show')) {
                 closeVictory();
             }
         }
