@@ -307,6 +307,13 @@
             font-weight: bold;
         }
 
+        .daily-info {
+            text-align: center;
+            color: #6c757d;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
         /* Modal Styles */
         .modal {
             display: none;
@@ -450,6 +457,11 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         }
 
+        .stat-item.highlight {
+            background: linear-gradient(145deg, #fff3cd, #ffeaa7);
+            box-shadow: 0 5px 20px rgba(255,193,7,0.2);
+        }
+
         .stat-value {
             font-size: 2em;
             font-weight: 800;
@@ -555,6 +567,8 @@
                     <li>Her bulmaca tek bir çözüme sahiptir</li>
                 </ul>
             </div>
+
+            <div class="daily-info" id="dailyInfo"></div>
         </div>
     </div>
 
@@ -578,6 +592,10 @@
                 <span>Beşiktaş</span>
                 <span class="theme-symbols">🦅 ⚫</span>
             </button>
+            <button class="theme-btn" onclick="selectTheme('summerheat')" id="theme-summerheat">
+                <span>Yaz Sıcağı</span>
+                <span class="theme-symbols">🍦 🍨</span>
+            </button>
         </div>
     </div>
 
@@ -594,9 +612,13 @@
                 <div class="stat-value" id="statHints">0</div>
                 <div class="stat-label">İpucu Kullanımı</div>
             </div>
+            <div class="stat-item highlight">
+                <div class="stat-value" id="statPercentile">-</div>
+                <div class="stat-label">Bugünkü Oyuncuların</div>
+            </div>
         </div>
 
-        <button class="play-again-btn" onclick="newGame(); closeVictory();">Tekrar Oyna</button>
+        <button class="play-again-btn" onclick="newGame(); closeVictory();">Yarının Oyununu Bekle</button>
     </div>
 
     <div class="overlay" id="overlay" onclick="closeOverlay()"></div>
@@ -612,13 +634,14 @@
         let timerInterval = null;
         let errorCells = new Set();
         let wrongHintCells = new Set();
+        let dailyGameSeed = null;
 
         const themes = {
             default: { name: 'Klasik', symbols: ['🐰', '🐢'] },
             galatasaray: { name: 'Galatasaray', symbols: ['🦁', '⭐'] },
             fenerbahce: { name: 'Fenerbahçe', symbols: ['🐤', '⚓'] },
             besiktas: { name: 'Beşiktaş', symbols: ['🦅', '⚫'] },
-            algida: { name: 'Yaz Sıcağı', symbols: ['🍦', '🍨'] }
+            summerheat: { name: 'Yaz Sıcağı', symbols: ['🍦', '🍨'] }
         };
 
         // Prevent zoom on iOS
@@ -632,9 +655,212 @@
             e.preventDefault();
         });
 
+        // Seeded random number generator
+        class SeededRandom {
+            constructor(seed) {
+                this.seed = seed;
+            }
+
+            next() {
+                this.seed = (this.seed * 9301 + 49297) % 233280;
+                return this.seed / 233280;
+            }
+
+            nextInt(min, max) {
+                return Math.floor(this.next() * (max - min + 1)) + min;
+            }
+
+            shuffle(array) {
+                const arr = [...array];
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = this.nextInt(0, i);
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+        }
+
         window.onload = function() {
-            newGame();
+            initializeDailyGame();
         };
+
+        function initializeDailyGame() {
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            dailyGameSeed = hashCode(dateStr);
+            
+            // Check if user already completed today's game
+            const savedData = localStorage.getItem('duoGameState');
+            if (savedData) {
+                const state = JSON.parse(savedData);
+                if (state.date === dateStr && state.completed) {
+                    // Show completed state
+                    document.getElementById('dailyInfo').textContent = "Bugünün oyununu tamamladınız! Yarın yeni bir oyun sizi bekliyor.";
+                    loadGameState(state);
+                    return;
+                } else if (state.date === dateStr && !state.completed) {
+                    // Resume today's game
+                    loadGameState(state);
+                    return;
+                }
+            }
+            
+            // New day, generate new game
+            newGame();
+            updateDailyInfo();
+        }
+
+        function hashCode(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash);
+        }
+
+        function updateDailyInfo() {
+            const today = new Date();
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            const dateStr = today.toLocaleDateString('tr-TR', options);
+            document.getElementById('dailyInfo').textContent = `Günün Oyunu: ${dateStr}`;
+        }
+
+        function saveGameState() {
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            
+            const state = {
+                date: dateStr,
+                gameBoard: gameBoard,
+                solution: solution,
+                fixedCells: fixedCells,
+                constraints: constraints,
+                hintCount: hintCount,
+                startTime: startTime,
+                completed: false,
+                theme: currentTheme
+            };
+            
+            localStorage.setItem('duoGameState', JSON.stringify(state));
+        }
+
+        function saveDailyScore(timeInSeconds, hints) {
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            
+            // Get existing scores for today
+            let dailyScores = JSON.parse(localStorage.getItem('duoDailyScores') || '{}');
+            if (!dailyScores[dateStr]) {
+                dailyScores[dateStr] = [];
+            }
+            
+            // Add this score
+            dailyScores[dateStr].push({
+                time: timeInSeconds,
+                hints: hints,
+                score: calculateScore(timeInSeconds, hints)
+            });
+            
+            localStorage.setItem('duoDailyScores', JSON.stringify(dailyScores));
+            
+            // Clean up old data (keep only last 30 days)
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            
+            Object.keys(dailyScores).forEach(date => {
+                const dateParts = date.split('-');
+                const scoreDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+                if (scoreDate < thirtyDaysAgo) {
+                    delete dailyScores[date];
+                }
+            });
+            
+            localStorage.setItem('duoDailyScores', JSON.stringify(dailyScores));
+        }
+
+        function calculateScore(timeInSeconds, hints) {
+            // Lower score is better
+            // Base score is time, with penalty for hints
+            return timeInSeconds + (hints * 30); // 30 second penalty per hint
+        }
+
+        function getPercentileRank(myScore) {
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            
+            const dailyScores = JSON.parse(localStorage.getItem('duoDailyScores') || '{}');
+            const todayScores = dailyScores[dateStr] || [];
+            
+            // If this is the first completion of the day, simulate some scores
+            if (todayScores.length <= 1) {
+                // Generate simulated scores for a more realistic distribution
+                const simulatedScores = generateSimulatedScores();
+                todayScores.push(...simulatedScores);
+            }
+            
+            // Sort scores (lower is better)
+            const allScores = todayScores.map(s => s.score).sort((a, b) => a - b);
+            
+            // Find position
+            let position = 0;
+            for (let score of allScores) {
+                if (score < myScore) position++;
+                else break;
+            }
+            
+            // Calculate percentile (what percentage you beat)
+            const percentile = Math.round((position / allScores.length) * 100);
+            return percentile;
+        }
+
+        function generateSimulatedScores() {
+            const scores = [];
+            const numScores = 50; // Simulate 50 other players
+            
+            for (let i = 0; i < numScores; i++) {
+                // Generate realistic completion times (60-600 seconds)
+                const time = Math.floor(60 + Math.random() * 540);
+                // Generate hint usage (0-3 hints, weighted towards fewer)
+                const hintRandom = Math.random();
+                let hints = 0;
+                if (hintRandom > 0.7) hints = 1;
+                if (hintRandom > 0.85) hints = 2;
+                if (hintRandom > 0.95) hints = 3;
+                
+                scores.push({
+                    time: time,
+                    hints: hints,
+                    score: calculateScore(time, hints)
+                });
+            }
+            
+            return scores;
+        }
+
+        function loadGameState(state) {
+            gameBoard = state.gameBoard;
+            solution = state.solution;
+            fixedCells = state.fixedCells;
+            constraints = state.constraints;
+            hintCount = state.hintCount;
+            startTime = state.startTime || Date.now();
+            currentTheme = state.theme || 'default';
+            
+            // Update theme button
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`theme-${currentTheme}`).classList.add('active');
+            
+            renderBoard();
+            
+            if (!state.completed) {
+                // Resume timer
+                clearInterval(timerInterval);
+                timerInterval = setInterval(updateTimer, 1000);
+                updateTimer();
+            }
+        }
 
         function toggleSettings() {
             const modal = document.getElementById('settingsModal');
@@ -648,6 +874,7 @@
             document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`theme-${theme}`).classList.add('active');
             renderBoard();
+            saveGameState();
             toggleSettings();
         }
 
@@ -773,6 +1000,7 @@
         function generatePuzzle() {
             let attempts = 0;
             const maxAttempts = 50;
+            const rng = new SeededRandom(dailyGameSeed);
             
             do {
                 gameBoard = Array(6).fill(null).map(() => Array(6).fill(null));
@@ -780,9 +1008,9 @@
                 constraints = [];
                 errorCells.clear();
                 wrongHintCells.clear();
-                solution = generateValidSolution();
+                solution = generateValidSolution(rng);
                 
-                // Generate constraints - more constraints make unique solutions more likely
+                // Generate constraints - maximum 10 constraints
                 const allPossibleConstraints = [];
                 for (let i = 0; i < 6; i++) {
                     for (let j = 0; j < 6; j++) {
@@ -795,10 +1023,10 @@
                     }
                 }
 
-                // Use more constraints to ensure unique solution
-                allPossibleConstraints.sort(() => Math.random() - 0.5);
-                const numConstraints = 12 + Math.floor(Math.random() * 4); // 12-15 constraints
-                const selectedConstraints = allPossibleConstraints.slice(0, numConstraints);
+                // Use no more than 10 constraints
+                const shuffled = rng.shuffle(allPossibleConstraints);
+                const numConstraints = rng.nextInt(8, 10); // 8-10 constraints
+                const selectedConstraints = shuffled.slice(0, numConstraints);
 
                 constraints = selectedConstraints.map(c => {
                     let val;
@@ -810,15 +1038,56 @@
                     return { ...c, constraint: val };
                 });
 
-                // Reveal some cells
+                // Get cells involved in constraints
+                const constraintCells = new Set();
+                constraints.forEach(c => {
+                    constraintCells.add(`${c.row},${c.col}`);
+                    if (c.type === 'horizontal') {
+                        constraintCells.add(`${c.row},${c.col + 1}`);
+                    } else {
+                        constraintCells.add(`${c.row + 1},${c.col}`);
+                    }
+                });
+
+                // Reveal 8-9 cells, avoiding cells connected by constraints
                 let revealedCount = 0;
-                const minRevealed = 10; // More initial cells for unique solution
-                const maxRevealed = 14;
-                const targetRevealed = minRevealed + Math.floor(Math.random() * (maxRevealed - minRevealed + 1));
+                const targetRevealed = rng.nextInt(8, 9);
+                const maxRevealAttempts = 100;
+                let revealAttempts = 0;
                 
+                while (revealedCount < targetRevealed && revealAttempts < maxRevealAttempts) {
+                    const row = rng.nextInt(0, 5);
+                    const col = rng.nextInt(0, 5);
+                    revealAttempts++;
+                    
+                    if (!fixedCells[row][col]) {
+                        // Check if this cell is connected to any already revealed cell via constraint
+                        let connectedToRevealed = false;
+                        
+                        constraints.forEach(c => {
+                            const r1 = c.row, c1 = c.col;
+                            const r2 = c.type === 'horizontal' ? r1 : r1 + 1;
+                            const c2 = c.type === 'horizontal' ? c1 + 1 : c1;
+                            
+                            if ((row === r1 && col === c1 && fixedCells[r2][c2]) ||
+                                (row === r2 && col === c2 && fixedCells[r1][c1])) {
+                                connectedToRevealed = true;
+                            }
+                        });
+                        
+                        if (!connectedToRevealed) {
+                            gameBoard[row][col] = solution[row][col];
+                            fixedCells[row][col] = true;
+                            revealedCount++;
+                        }
+                    }
+                }
+                
+                // If we couldn't reveal enough cells without constraint connections, 
+                // reveal some anyway to meet the minimum
                 while (revealedCount < targetRevealed) {
-                    const row = Math.floor(Math.random() * 6);
-                    const col = Math.floor(Math.random() * 6);
+                    const row = rng.nextInt(0, 5);
+                    const col = rng.nextInt(0, 5);
                     if (!fixedCells[row][col]) {
                         gameBoard[row][col] = solution[row][col];
                         fixedCells[row][col] = true;
@@ -836,14 +1105,14 @@
             }
         }
 
-        function generateValidSolution() {
+        function generateValidSolution(rng) {
             const board = Array(6).fill(null).map(() => Array(6).fill(null));
             
             function solve() {
                 for (let i = 0; i < 6; i++) {
                     for (let j = 0; j < 6; j++) {
                         if (board[i][j] === null) {
-                            const symbols = [0, 1].sort(() => Math.random() - 0.5);
+                            const symbols = rng.next() > 0.5 ? [0, 1] : [1, 0];
                             for (const sym of symbols) {
                                 board[i][j] = sym;
                                 if (isPlacementValid(board, i, j, []) && solve()) {
@@ -951,6 +1220,7 @@
             
             checkAllRules();
             renderBoard();
+            saveGameState();
             
             if (checkVictory()) {
                 showVictory();
@@ -1034,8 +1304,21 @@
             const seconds = elapsed % 60;
             const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
+            // Save the score
+            saveDailyScore(elapsed, hintCount);
+            
+            // Calculate percentile
+            const myScore = calculateScore(elapsed, hintCount);
+            const percentile = getPercentileRank(myScore);
+            
             document.getElementById('statTime').textContent = timeStr;
             document.getElementById('statHints').textContent = hintCount;
+            document.getElementById('statPercentile').textContent = `${percentile}%'inden daha iyi!`;
+            
+            // Mark game as completed
+            const savedData = JSON.parse(localStorage.getItem('duoGameState') || '{}');
+            savedData.completed = true;
+            localStorage.setItem('duoGameState', JSON.stringify(savedData));
             
             document.getElementById('overlay').classList.add('show');
             document.getElementById('victoryModal').classList.add('show');
@@ -1047,6 +1330,19 @@
         }
 
         function newGame() {
+            // Check if today's game is already completed
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            const savedData = localStorage.getItem('duoGameState');
+            
+            if (savedData) {
+                const state = JSON.parse(savedData);
+                if (state.date === dateStr && state.completed) {
+                    alert("Bugünün oyununu zaten tamamladınız! Yarın yeni bir oyun için geri gelin.");
+                    return;
+                }
+            }
+            
             hintCount = 0;
             closeVictory();
             
@@ -1057,6 +1353,8 @@
             clearInterval(timerInterval);
             timerInterval = setInterval(updateTimer, 1000);
             updateTimer();
+            
+            saveGameState();
         }
 
         function updateTimer() {
@@ -1113,6 +1411,7 @@
             if (hintFound) {
                 hintCount++;
                 renderBoard();
+                saveGameState();
                 return;
             }
             
@@ -1255,6 +1554,7 @@
                 hintCount++;
                 checkAllRules();
                 renderBoard();
+                saveGameState();
                 if (checkVictory()) showVictory();
             }
         }
