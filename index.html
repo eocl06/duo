@@ -34,8 +34,6 @@
             position: relative;
         }
 
-
-
         .game-container {
             width: 100vw;
             height: 100vh;
@@ -52,34 +50,14 @@
             padding: 15px 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .timer {
-            font-size: 1.1em;
-            font-weight: 600;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .timer::before {
-            content: '⏱️';
-            font-size: 0.9em;
-        }
-
         h1 {
-            font-size: 1.4em;
+            font-size: 1.6em;
             font-weight: 700;
             color: white;
             text-align: center;
@@ -87,6 +65,8 @@
         }
 
         .header-right {
+            position: absolute;
+            right: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -112,7 +92,23 @@
             transform: scale(0.95);
         }
 
-.game-content {
+        .timer-display {
+            position: absolute;
+            left: 20px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .timer-display::before {
+            content: '⏱️';
+            font-size: 0.9em;
+        }
+
+        .game-content {
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -156,6 +152,10 @@
             touch-action: manipulation;
         }
 
+        .cell.game-completed {
+            cursor: not-allowed;
+        }
+
         .cell::after {
             content: '';
             position: absolute;
@@ -172,7 +172,7 @@
             z-index: 1;
         }
 
-        .cell:active:not(.fixed)::after {
+        .cell:active:not(.fixed):not(.game-completed)::after {
             transform: translate(-50%, -50%) scale(0.8);
             opacity: 1;
         }
@@ -193,12 +193,12 @@
         }
 
         .cell.error {
-            background: rgba(255, 59, 48, 0.2);
+            background: rgba(255, 255, 255, 0.05);
             animation: shake 0.4s ease;
         }
 
         .cell.wrong-hint {
-            background: rgba(255, 204, 0, 0.2);
+            background: rgba(255, 204, 0, 0.1);
             animation: pulse 1s ease infinite;
         }
 
@@ -215,7 +215,7 @@
 
         .cell.success {
             animation: successBounce 0.5s ease;
-            background: rgba(52, 199, 89, 0.2);
+            background: rgba(255, 255, 255, 0.08);
         }
 
         @keyframes successBounce {
@@ -281,6 +281,7 @@
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
             overflow: hidden;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
         }
 
         .instructions-header {
@@ -312,53 +313,100 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease;
+            position: relative;
         }
 
         .instructions-content.open {
-            max-height: 400px;
+            max-height: 380px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+            scroll-behavior: smooth;
+            overscroll-behavior: contain;
+            box-shadow: inset 0 -10px 10px -10px rgba(0, 0, 0, 0.3);
         }
 
-        .instructions-list {
-            padding: 0 20px 20px;
-            list-style: none;
+        /* Custom scrollbar for webkit browsers */
+        .instructions-content.open::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .instructions-content.open::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .instructions-content.open::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .instructions-content.open::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .instructions-inner {
+            padding: 20px;
+            padding-bottom: 25px;
+        }
+
+        .instruction-section {
+            margin-bottom: 20px;
+        }
+
+        .instruction-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .instruction-title {
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .instruction-text {
             color: rgba(255, 255, 255, 0.7);
             font-size: 0.9em;
-            line-height: 1.5;
+            line-height: 1.6;
+            margin-bottom: 10px;
         }
 
-        .instructions-list li {
-            margin: 12px 0;
+        .rule-example {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 8px 0;
             display: flex;
-            align-items: flex-start;
-            gap: 8px;
-        }
-
-        .instructions-list li::before {
-            content: "•";
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: bold;
-            margin-top: 2px;
-        }
-
-        .example {
-            display: inline-flex;
             align-items: center;
-            gap: 4px;
-            margin: 0 4px;
+            justify-content: space-between;
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .example-symbols {
+        .rule-example-symbols {
+            font-size: 1.2em;
+        }
+
+        .rule-status {
             font-size: 1.1em;
         }
 
-        .example-check {
-            color: #34c759;
-            font-size: 0.9em;
+        .rule-status.valid {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
         }
 
-        .example-cross {
-            color: #ff3b30;
-            font-size: 0.9em;
+        .rule-status.invalid {
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 600;
+        }
+
+        .constraint-example {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 1.1em;
         }
 
         .daily-info {
@@ -500,8 +548,6 @@
             to { opacity: 1; }
         }
 
-
-
         /* Victory Modal */
         .victory-modal {
             max-width: 500px;
@@ -512,7 +558,6 @@
 
         .stats-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
             gap: 15px;
             margin: 20px 0;
         }
@@ -543,6 +588,20 @@
             color: rgba(255, 255, 255, 0.7);
             font-size: 0.95em;
             font-weight: 600;
+        }
+
+        .comparison-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .comparison-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
         }
 
         .theme-leaderboard {
@@ -586,8 +645,8 @@
         }
 
         .theme-rank.current-theme {
-            background: rgba(52, 199, 89, 0.1);
-            border: 1px solid rgba(52, 199, 89, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.25);
         }
 
         .theme-info {
@@ -667,11 +726,11 @@
             }
 
             h1 {
-                font-size: 1.2em;
+                font-size: 1.4em;
             }
 
-            .timer {
-                font-size: 1em;
+            .timer-display {
+                font-size: 0.95em;
             }
 
             .game-content {
@@ -688,6 +747,15 @@
 
             .instructions {
                 max-width: 350px;
+            }
+
+            .instructions-content.open {
+                max-height: 300px;
+            }
+
+            .instructions-inner {
+                padding: 15px;
+                padding-bottom: 20px;
             }
 
             .victory-modal {
@@ -730,9 +798,7 @@
 <body>
     <div class="game-container">
         <div class="header">
-            <div class="header-left">
-                <div class="timer" id="timer">0:47</div>
-            </div>
+            <div class="timer-display" id="timer">0:00</div>
             <h1>Duo</h1>
             <div class="header-right">
                 <button class="header-btn" onclick="showStats()" id="statsBtn" style="display: none;">📊</button>
@@ -740,7 +806,7 @@
             </div>
         </div>
 
-<div class="game-content">
+        <div class="game-content">
             <div class="game-board">
                 <div class="grid" id="gameGrid"></div>
             </div>
@@ -753,17 +819,69 @@
             <div class="instructions">
                 <div class="instructions-header" onclick="toggleInstructions()">
                     <div class="instructions-title">Nasıl Oynanır</div>
-                    <div class="instructions-toggle" id="instructionsToggle">^</div>
+                    <div class="instructions-toggle" id="instructionsToggle">▼</div>
                 </div>
                 <div class="instructions-content" id="instructionsContent">
-                    <ul class="instructions-list">
-                        <li>Izgara her hücre bir <span class="example-symbols">🍔</span> veya bir <span class="example-symbols">🍟</span> içerecek şekilde doldurun.</li>
-                        <li>2'den fazla <span class="example-symbols">🍔</span> veya <span class="example-symbols">🍟</span> yan yana (dikey veya yatay) olamaz.</li>
-                        <li><span class="example"><span class="example-symbols">🍔🍔</span> <span class="example-check">✓</span></span></li>
-                        <li><span class="example"><span class="example-symbols">🍔🍔🍔</span> <span class="example-cross">✗</span></span></li>
-                        <li>Her satır (ve sütun) aynı sayıda <span class="example-symbols">🍔</span> ve <span class="example-symbols">🍟</span> içermeli.</li>
-                        <li><strong>=</strong> işaretiyle ayrılan hücreler aynı türde olmalı. <strong>×</strong> işaretiyle ayrılanlar farklı olmalı.</li>
-                    </ul>
+                    <div class="instructions-inner">
+                        <div class="instruction-section">
+                            <div class="instruction-title">🎯 Amaç</div>
+                            <div class="instruction-text">
+                                6x6'lık ızgarayı iki farklı sembolle doldurun. Her hücrede ya <span class="theme-symbol-0" style="font-size: 1.1em;">🐰</span> ya da <span class="theme-symbol-1" style="font-size: 1.1em;">🐢</span> olmalıdır.
+                            </div>
+                        </div>
+
+                        <div class="instruction-section">
+                            <div class="instruction-title">📏 Kural 1: Dengeli Dağılım</div>
+                            <div class="instruction-text">
+                                Her satır ve sütunda tam olarak 3 adet <span class="theme-symbol-0" style="font-size: 1.1em;">🐰</span> ve 3 adet <span class="theme-symbol-1" style="font-size: 1.1em;">🐢</span> bulunmalıdır.
+                            </div>
+                        </div>
+
+                        <div class="instruction-section">
+                            <div class="instruction-title">🚫 Kural 2: Üçlü Yasak</div>
+                            <div class="instruction-text">
+                                Aynı sembolden 3 tanesi yan yana (yatay veya dikey) gelemez.
+                            </div>
+                            <div class="rule-example">
+                                <span class="rule-example-symbols"><span class="theme-symbol-0">🐰</span> <span class="theme-symbol-0">🐰</span></span>
+                                <span class="rule-status valid">✓ Geçerli</span>
+                            </div>
+                            <div class="rule-example">
+                                <span class="rule-example-symbols"><span class="theme-symbol-0">🐰</span> <span class="theme-symbol-0">🐰</span> <span class="theme-symbol-0">🐰</span></span>
+                                <span class="rule-status invalid">✗ Geçersiz</span>
+                            </div>
+                        </div>
+
+                        <div class="instruction-section">
+                            <div class="instruction-title">🔗 Kural 3: Bağlantılar</div>
+                            <div class="instruction-text">
+                                Hücreler arasındaki işaretler ilişkiyi gösterir:
+                            </div>
+                            <div class="rule-example">
+                                <span class="constraint-example">
+                                    <span class="theme-symbol-0" style="font-size: 1.1em;">🐰</span>
+                                    <strong>=</strong>
+                                    <span class="theme-symbol-0" style="font-size: 1.1em;">🐰</span>
+                                </span>
+                                <span class="rule-status valid">Aynı olmalı</span>
+                            </div>
+                            <div class="rule-example">
+                                <span class="constraint-example">
+                                    <span class="theme-symbol-0" style="font-size: 1.1em;">🐰</span>
+                                    <strong>×</strong>
+                                    <span class="theme-symbol-1" style="font-size: 1.1em;">🐢</span>
+                                </span>
+                                <span class="rule-status valid">Farklı olmalı</span>
+                            </div>
+                        </div>
+
+                        <div class="instruction-section">
+                            <div class="instruction-title">💡 İpucu</div>
+                            <div class="instruction-text">
+                                Başlangıçta verilen semboller değiştirilemez. Boş hücrelere tıklayarak sembolleri yerleştirin.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -775,13 +893,13 @@
         <button class="close-modal-btn" onclick="toggleSettings()">×</button>
         <h2 class="modal-title">Tema Seçimi</h2>
         <div class="theme-options">
-            <button class="theme-btn active" onclick="selectTheme('matchday')" id="theme-matchday">
-                <span>Match Day</span>
-                <span class="theme-symbols">🍔 🍟</span>
-            </button>
-            <button class="theme-btn" onclick="selectTheme('default')" id="theme-default">
+            <button class="theme-btn active" onclick="selectTheme('default')" id="theme-default">
                 <span>Klasik</span>
                 <span class="theme-symbols">🐰 🐢</span>
+            </button>
+            <button class="theme-btn" onclick="selectTheme('matchday')" id="theme-matchday">
+                <span>Match Day</span>
+                <span class="theme-symbols">🍔 🍟</span>
             </button>
             <button class="theme-btn" onclick="selectTheme('galatasaray')" id="theme-galatasaray">
                 <span>Galatasaray</span>
@@ -808,16 +926,16 @@
         
         <div class="stats-grid">
             <div class="stat-item">
-                <div class="stat-value" id="statTime">00:00</div>
-                <div class="stat-label">Süreniz</div>
+                <div class="stat-value">1:32</div>
+                <div class="stat-label">Bugünkü Ortalama Süre</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value" id="statAvgTime">00:00</div>
-                <div class="stat-label">Ortalama Süre</div>
+                <div class="stat-value" id="statTime">00:00</div>
+                <div class="stat-label">Sizin Süreniz</div>
             </div>
             <div class="stat-item full-width highlight">
                 <div class="stat-value" id="statPercentile">-</div>
-                <div class="stat-label">🏆 Bugünkü oyunculardan daha iyi!</div>
+                <div class="stat-label">🏆 Bugünkü oyunculardan daha hızlısınız!</div>
             </div>
             <div class="stat-item full-width" style="font-size: 0.9em;">
                 <span style="color: rgba(255, 255, 255, 0.7);">İpucu Kullanımı: </span>
@@ -836,7 +954,7 @@
     <div class="overlay" id="overlay" onclick="closeOverlay()"></div>
 
     <script>
-        let currentTheme = 'matchday';
+        let currentTheme = 'default'; // Changed default theme
         let gameBoard = [];
         let solution = [];
         let fixedCells = [];
@@ -848,10 +966,11 @@
         let wrongHintCells = new Set();
         let dailyGameSeed = null;
         let moveHistory = [];
+        let gameCompleted = false; // New flag for game completion
 
         const themes = {
-            matchday: { name: 'Match Day', symbols: ['🍔', '🍟'] },
             default: { name: 'Klasik', symbols: ['🐰', '🐢'] },
+            matchday: { name: 'Match Day', symbols: ['🍔', '🍟'] },
             galatasaray: { name: 'Galatasaray', symbols: ['🦁', '⭐'] },
             fenerbahce: { name: 'Fenerbahçe', symbols: ['🐤', '⚓'] },
             besiktas: { name: 'Beşiktaş', symbols: ['🦅', '⚫'] },
@@ -894,7 +1013,15 @@
             }
         }
 
-
+        function updateInstructionSymbols() {
+            // Update all instruction symbols to match current theme
+            document.querySelectorAll('.theme-symbol-0').forEach(el => {
+                el.textContent = themes[currentTheme].symbols[0];
+            });
+            document.querySelectorAll('.theme-symbol-1').forEach(el => {
+                el.textContent = themes[currentTheme].symbols[1];
+            });
+        }
 
         function toggleInstructions() {
             const content = document.getElementById('instructionsContent');
@@ -902,6 +1029,35 @@
             
             content.classList.toggle('open');
             toggle.classList.toggle('open');
+            
+            // Reset scroll position when closing
+            if (!content.classList.contains('open')) {
+                content.removeEventListener('scroll', updateInstructionShadows);
+                setTimeout(() => {
+                    content.scrollTop = 0;
+                    content.style.boxShadow = '';
+                }, 300);
+            } else {
+                // Add scroll listener to update shadows
+                content.addEventListener('scroll', updateInstructionShadows);
+                setTimeout(updateInstructionShadows, 100);
+            }
+        }
+
+        function updateInstructionShadows() {
+            const content = document.getElementById('instructionsContent');
+            const isAtTop = content.scrollTop <= 0;
+            const isAtBottom = content.scrollTop + content.clientHeight >= content.scrollHeight - 1;
+            
+            if (isAtTop && isAtBottom) {
+                content.style.boxShadow = 'none';
+            } else if (isAtTop) {
+                content.style.boxShadow = 'inset 0 -10px 10px -10px rgba(0, 0, 0, 0.3)';
+            } else if (isAtBottom) {
+                content.style.boxShadow = 'inset 0 10px 10px -10px rgba(0, 0, 0, 0.3)';
+            } else {
+                content.style.boxShadow = 'inset 0 10px 10px -10px rgba(0, 0, 0, 0.3), inset 0 -10px 10px -10px rgba(0, 0, 0, 0.3)';
+            }
         }
 
         function clearBoard() {
@@ -922,7 +1078,7 @@
         }
 
         function undoMove() {
-            if (moveHistory.length === 0) return;
+            if (moveHistory.length === 0 || gameCompleted) return;
             
             const lastMove = moveHistory.pop();
             gameBoard[lastMove.row][lastMove.col] = lastMove.previousValue;
@@ -950,18 +1106,21 @@
                 const state = JSON.parse(savedData);
                 if (state.date === dateStr && state.completed) {
                     // Show completed state
+                    gameCompleted = true;
                     document.getElementById('dailyInfo').textContent = "Bugünün oyununu tamamladınız! Yarın yeni bir oyun sizi bekliyor.";
                     document.getElementById('statsBtn').style.display = 'inline-block';
                     loadGameState(state);
                     return;
                 } else if (state.date === dateStr && !state.completed) {
                     // Resume today's game
+                    gameCompleted = false;
                     loadGameState(state);
                     return;
                 }
             }
             
             // New day, generate new game
+            gameCompleted = false;
             newGame();
             updateDailyInfo();
         }
@@ -995,7 +1154,7 @@
                 constraints: constraints,
                 hintCount: hintCount,
                 startTime: startTime,
-                completed: false,
+                completed: gameCompleted,
                 theme: currentTheme,
                 moveHistory: moveHistory
             };
@@ -1052,77 +1211,22 @@
             return timeInSeconds + (hints * 30); // 30 second penalty per hint
         }
 
-        function getPercentileRank(myScore) {
-            const today = new Date();
-            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+        function getPercentileRank(myTime) {
+            // Fixed average time is 1:32 (92 seconds)
+            const avgTime = 92;
             
-            const dailyScores = JSON.parse(localStorage.getItem('duoDailyScores') || '{}');
-            const todayScores = dailyScores[dateStr] || [];
+            // Calculate how much better/worse the player is
+            const difference = avgTime - myTime;
             
-            // If this is the first completion of the day, simulate some scores
-            if (todayScores.length <= 1) {
-                // Generate simulated scores for a more realistic distribution
-                const simulatedScores = generateSimulatedScores();
-                todayScores.push(...simulatedScores);
-            }
+            // Convert to percentage
+            // If player is 20 seconds faster, they're about 22% better
+            // If player is 20 seconds slower, they're about 22% worse
+            let percentage = Math.round((difference / avgTime) * 100);
             
-            // Sort scores (lower is better)
-            const allScores = todayScores.map(s => s.score).sort((a, b) => a - b);
+            // Ensure percentage is between -99 and 99
+            percentage = Math.max(-99, Math.min(99, percentage));
             
-            // Find position
-            let position = 0;
-            for (let score of allScores) {
-                if (score < myScore) position++;
-                else break;
-            }
-            
-            // Calculate percentile (what percentage you beat)
-            const percentile = Math.round((position / allScores.length) * 100);
-            return percentile;
-        }
-
-        function generateSimulatedScores() {
-            const scores = [];
-            const numScores = 50; // Simulate 50 other players
-            
-            for (let i = 0; i < numScores; i++) {
-                // Generate realistic completion times (60-600 seconds)
-                const time = Math.floor(60 + Math.random() * 540);
-                // Generate hint usage (0-3 hints, weighted towards fewer)
-                const hintRandom = Math.random();
-                let hints = 0;
-                if (hintRandom > 0.7) hints = 1;
-                if (hintRandom > 0.85) hints = 2;
-                if (hintRandom > 0.95) hints = 3;
-                
-                scores.push({
-                    time: time,
-                    hints: hints,
-                    score: calculateScore(time, hints)
-                });
-            }
-            
-            return scores;
-        }
-
-        function getAverageTime() {
-            const today = new Date();
-            const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-            
-            const dailyScores = JSON.parse(localStorage.getItem('duoDailyScores') || '{}');
-            let todayScores = dailyScores[dateStr] || [];
-            
-            // If this is the first completion, add simulated scores
-            if (todayScores.length <= 1) {
-                const simulatedScores = generateSimulatedScores();
-                todayScores = todayScores.concat(simulatedScores);
-            }
-            
-            // Calculate average time
-            const totalTime = todayScores.reduce((sum, score) => sum + score.time, 0);
-            const avgTime = Math.round(totalTime / todayScores.length);
-            
-            return avgTime;
+            return percentage;
         }
 
         function getThemeLeaderboard(currentTheme) {
@@ -1202,12 +1306,16 @@
             constraints = state.constraints;
             hintCount = state.hintCount;
             startTime = state.startTime || Date.now();
-            currentTheme = state.theme || 'matchday';
+            currentTheme = state.theme || 'default'; // Changed to default
             moveHistory = state.moveHistory || [];
+            gameCompleted = state.completed || false;
             
             // Update theme button
             document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`theme-${currentTheme}`).classList.add('active');
+            
+            // Update instruction symbols
+            updateInstructionSymbols();
             
             renderBoard();
             
@@ -1234,6 +1342,7 @@
             document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`theme-${theme}`).classList.add('active');
             renderBoard();
+            updateInstructionSymbols();
             saveGameState();
             toggleSettings();
         }
@@ -1545,6 +1654,7 @@
                     if (fixedCells[i][j]) cell.classList.add('fixed');
                     if (errorCells.has(`${i},${j}`)) cell.classList.add('error');
                     if (wrongHintCells.has(`${i},${j}`)) cell.classList.add('wrong-hint');
+                    if (gameCompleted) cell.classList.add('game-completed');
                     
                     if (gameBoard[i][j] !== null) {
                         cell.textContent = themes[currentTheme].symbols[gameBoard[i][j]];
@@ -1553,7 +1663,7 @@
                     cell.dataset.row = i;
                     cell.dataset.col = j;
                     
-                    if (!fixedCells[i][j]) {
+                    if (!fixedCells[i][j] && !gameCompleted) {
                         cell.addEventListener('click', () => cellClick(i, j));
                         cell.addEventListener('touchend', (e) => {
                             e.preventDefault();
@@ -1576,7 +1686,7 @@
         }
 
         function cellClick(row, col) {
-            if (fixedCells[row][col]) return;
+            if (fixedCells[row][col] || gameCompleted) return;
             
             // Clear wrong hint highlighting when user interacts
             wrongHintCells.clear();
@@ -1683,6 +1793,7 @@
 
         function showVictory() {
             clearInterval(timerInterval);
+            gameCompleted = true;
             
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
             const minutes = Math.floor(elapsed / 60);
@@ -1693,14 +1804,17 @@
             saveDailyScore(elapsed, hintCount);
             
             // Calculate statistics
-            const myScore = calculateScore(elapsed, hintCount);
-            const percentile = getPercentileRank(myScore);
-            const avgTime = getAverageTime();
+            const percentile = getPercentileRank(elapsed);
             
             // Update display
             document.getElementById('statTime').textContent = timeStr;
-            document.getElementById('statAvgTime').textContent = formatTime(avgTime);
-            document.getElementById('statPercentile').textContent = `%${percentile}`;
+            if (percentile > 0) {
+                document.getElementById('statPercentile').textContent = `%${percentile}`;
+                document.querySelector('#statPercentile + .stat-label').textContent = '🏆 Bugünkü oyunculardan daha hızlısınız!';
+            } else {
+                document.getElementById('statPercentile').textContent = `%${Math.abs(percentile)}`;
+                document.querySelector('#statPercentile + .stat-label').textContent = '🏆 Bugünkü oyunculardan daha yavaşsınız!';
+            }
             document.getElementById('statHints').textContent = hintCount;
             
             // Save stats for later viewing
@@ -1709,8 +1823,7 @@
             const savedStats = JSON.parse(localStorage.getItem('duoSavedStats') || '{}');
             savedStats[dateStr] = {
                 time: timeStr,
-                avgTime: formatTime(avgTime),
-                percentile: `%${percentile}`,
+                percentile: percentile,
                 hints: hintCount
             };
             localStorage.setItem('duoSavedStats', JSON.stringify(savedStats));
@@ -1764,8 +1877,14 @@
                     const savedStats = JSON.parse(localStorage.getItem('duoSavedStats') || '{}');
                     if (savedStats[dateStr]) {
                         document.getElementById('statTime').textContent = savedStats[dateStr].time;
-                        document.getElementById('statAvgTime').textContent = savedStats[dateStr].avgTime;
-                        document.getElementById('statPercentile').textContent = savedStats[dateStr].percentile;
+                        const percentile = savedStats[dateStr].percentile;
+                        if (percentile > 0) {
+                            document.getElementById('statPercentile').textContent = `%${percentile}`;
+                            document.querySelector('#statPercentile + .stat-label').textContent = '🏆 Bugünkü oyunculardan daha hızlısınız!';
+                        } else {
+                            document.getElementById('statPercentile').textContent = `%${Math.abs(percentile)}`;
+                            document.querySelector('#statPercentile + .stat-label').textContent = '🏆 Bugünkü oyunculardan daha yavaşsınız!';
+                        }
                         document.getElementById('statHints').textContent = savedStats[dateStr].hints;
                         
                         // Render theme leaderboard
@@ -1801,6 +1920,7 @@
             }
             
             hintCount = 0;
+            gameCompleted = false;
             closeVictory();
             
             // Hide stats button for new game
@@ -1808,6 +1928,7 @@
             
             generatePuzzle();
             renderBoard();
+            updateInstructionSymbols();
             
             startTime = Date.now();
             clearInterval(timerInterval);
@@ -1825,6 +1946,8 @@
         }
 
         function getHint() {
+            if (gameCompleted) return;
+            
             // Clear previous wrong hint highlighting
             wrongHintCells.clear();
             
