@@ -454,9 +454,18 @@
         .modal-title {
             font-size: 1.6em;
             margin-bottom: 20px;
+            margin-top: 10px;
             text-align: center;
             color: white;
             position: relative;
+        }
+
+        .victory-modal h2.modal-title {
+            margin-top: 0;
+        }
+
+        .reward-section + .modal-title {
+            margin-top: 0;
         }
 
         .theme-options {
@@ -745,7 +754,7 @@
 
         /* Reward Section Styles */
         .reward-section {
-            margin: 25px 0;
+            margin: 0 0 25px 0;
             padding: 25px;
             background: linear-gradient(135deg, rgba(255, 204, 0, 0.15) 0%, rgba(255, 149, 0, 0.1) 100%);
             border-radius: 15px;
@@ -796,6 +805,7 @@
             font-size: 3em;
             margin-bottom: 10px;
             animation: bounce 0.6s ease infinite alternate;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
         }
 
         @keyframes bounce {
@@ -812,13 +822,6 @@
 
         .reward-code-container {
             margin: 20px 0;
-        }
-
-        .reward-label {
-            display: block;
-            font-size: 0.9em;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 10px;
         }
 
         .reward-code-box {
@@ -885,6 +888,54 @@
             max-width: 90%;
             margin-left: auto;
             margin-right: auto;
+        }
+
+        .reward-cta-btn {
+            background: linear-gradient(135deg, #ffcc00 0%, #ff9500 100%);
+            color: #000;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 25px;
+            font-size: 0.95em;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 320px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reward-cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .reward-cta-btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .reward-cta-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (hover: hover) {
+            .reward-cta-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
+            }
         }
 
         .play-again-btn {
@@ -1009,7 +1060,7 @@
 
             .reward-section {
                 padding: 15px;
-                margin: 15px 0;
+                margin: 0 0 15px 0;
             }
 
             .reward-icon {
@@ -1028,8 +1079,9 @@
                 padding: 10px 15px;
             }
 
-            .reward-text {
+            .reward-cta-btn {
                 font-size: 0.9em;
+                padding: 12px 20px;
             }
         }
     </style>
@@ -1132,11 +1184,11 @@
         <button class="close-modal-btn" onclick="toggleSettings()">×</button>
         <h2 class="modal-title">Tema Seçimi</h2>
         <div class="theme-options">
-            <button class="theme-btn active" onclick="selectTheme('default')" id="theme-default">
+            <button class="theme-btn" onclick="selectTheme('default')" id="theme-default">
                 <span>Klasik</span>
                 <span class="theme-symbols">🐰 🐢</span>
             </button>
-            <button class="theme-btn" onclick="selectTheme('matchday')" id="theme-matchday">
+            <button class="theme-btn active" onclick="selectTheme('matchday')" id="theme-matchday">
                 <span>Match Day</span>
                 <span class="theme-symbols">🍔 🍟</span>
             </button>
@@ -1161,6 +1213,27 @@
 
     <div class="modal victory-modal" id="victoryModal">
         <button class="close-modal-btn" onclick="closeVictory()">×</button>
+        
+        <!-- Special Reward Section (Matchday Theme Only) -->
+        <div class="reward-section" id="rewardSection" style="display: none;">
+            <div class="reward-content">
+                <div class="reward-icon">🍟</div>
+                <h3 class="reward-title">Tebrikler, Kupon kodu senindir!</h3>
+                <div class="reward-code-container">
+                    <div class="reward-code-box">
+                        <span class="reward-code" id="rewardCode">DUO100</span>
+                        <button class="copy-btn" onclick="copyRewardCode()">
+                            <span class="copy-icon">📋</span>
+                            <span class="copy-text">Kopyala</span>
+                        </button>
+                    </div>
+                </div>
+                <button class="reward-cta-btn" onclick="openMcDonaldsApp()">
+                    <span style="position: relative; z-index: 1;">Hemen kullanmak için McDonald's uygulamasını indir</span>
+                </button>
+            </div>
+        </div>
+        
         <h2 class="modal-title">🎉 Tebrikler! 🎉</h2>
         
         <div class="stats-grid">
@@ -1179,25 +1252,6 @@
             <div class="stat-item full-width" style="font-size: 0.9em;">
                 <span style="color: rgba(255, 255, 255, 0.7);">İpucu Kullanımı: </span>
                 <span id="statHints" style="font-weight: 700; color: white;">0</span>
-            </div>
-        </div>
-
-        <!-- Special Reward Section (Matchday Theme Only) -->
-        <div class="reward-section" id="rewardSection" style="display: none;">
-            <div class="reward-content">
-                <div class="reward-icon">🎉</div>
-                <h3 class="reward-title">Özel Ödül Kazandın!</h3>
-                <div class="reward-code-container">
-                    <span class="reward-label">İndirim Kodun:</span>
-                    <div class="reward-code-box">
-                        <span class="reward-code" id="rewardCode">DUO100</span>
-                        <button class="copy-btn" onclick="copyRewardCode()">
-                            <span class="copy-icon">📋</span>
-                            <span class="copy-text">Kopyala</span>
-                        </button>
-                    </div>
-                </div>
-                <p class="reward-text">Tebrikler! McDonald's'ta geçerli 100₺ indirim kazandın. Uygulamayı indir, maç keyfini katla!</p>
             </div>
         </div>
 
@@ -1228,9 +1282,12 @@
         const STATS_BANNER_LINK_URL = ''; // Optional: Add a URL to make the banner clickable
         const STATS_BANNER_ALT_TEXT = 'Promotional Banner'; // Optional: Alt text for accessibility
 
+        // McDonald's App URL Configuration
+        const MCDONALDS_APP_URL = 'https://www.mcdonalds.com.tr/mobil-uygulama'; // Configure McDonald's app link
+
         /* ======================================== */
 
-        let currentTheme = 'default'; // Changed default theme
+        let currentTheme = 'matchday'; // Changed default theme to matchday
         let gameBoard = [];
         let solution = [];
         let fixedCells = [];
@@ -1287,6 +1344,11 @@
                 }
                 return arr;
             }
+        }
+
+        function openMcDonaldsApp() {
+            // Use the configured McDonald's app URL
+            window.open(MCDONALDS_APP_URL, '_blank');
         }
 
         function copyRewardCode() {
@@ -1629,7 +1691,7 @@
             constraints = state.constraints;
             hintCount = state.hintCount;
             startTime = state.startTime || Date.now();
-            currentTheme = state.theme || 'default'; // Changed to default
+            currentTheme = state.theme || 'matchday'; // Changed to matchday
             moveHistory = state.moveHistory || [];
             gameCompleted = state.completed || false;
             
@@ -2165,7 +2227,7 @@
             }
             
             // Add clickable class if link is provided
-            if (STATS_BANNER_LINK_URL) {
+            if (STATS_BANNER_LINK_URL && STATS_BANNER_IMAGE_URL) {
                 bannerContainer.classList.add('clickable');
             } else {
                 bannerContainer.classList.remove('clickable');
@@ -2265,7 +2327,7 @@
                         }
                         
                         // Add clickable class if link is provided
-                        if (STATS_BANNER_LINK_URL) {
+                        if (STATS_BANNER_LINK_URL && STATS_BANNER_IMAGE_URL) {
                             bannerContainer.classList.add('clickable');
                         } else {
                             bannerContainer.classList.remove('clickable');
@@ -2534,6 +2596,29 @@
                     setTimeout(() => cellEl.classList.remove('success'), 800);
                 }
             }, 100);
+        }
+
+        function createGoldenConfetti() {
+            const colors = ['#ffcc00', '#ffd700', '#ffed4e', '#fff59d', '#ffeb3b'];
+            
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti-piece';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    confetti.style.width = '12px';
+                    confetti.style.height = '12px';
+                    confetti.style.borderRadius = '50%';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 4000);
+                }, i * 30);
+            }
         }
 
         function createConfetti() {
